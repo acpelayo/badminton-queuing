@@ -1,0 +1,170 @@
+:root {
+	--color1: #f9b900;
+}
+
+* {
+	margin: 0;
+	box-sizing: border-box;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+span,
+div {
+	font-size: 12px;
+}
+
+main {
+	max-width: 430px;
+	width: 100%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	/* height: 100vh; */
+	padding: 10px;
+	/* border: 1px solid red; */
+}
+
+button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.player,
+.add-player {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.player {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 10px;
+	margin-bottom: 5px;
+	background-color: var(--color1);
+	border-radius: 15px;
+}
+
+.player-list,
+.add-player {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.player > span {
+	margin-right: auto;
+}
+
+.player > button {
+	background-color: white;
+	color: black;
+	border: none;
+	border-radius: 5px;
+	height: 30px;
+	width: 30px;
+}
+
+.add-player {
+	flex-direction: column;
+}
+
+.add-player > input {
+	width: 80%;
+	padding: 5px;
+	text-align: center;
+	margin-bottom: 5px;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.add-player > button,
+.add-match button {
+	margin-left: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	height: 100%;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.add-match {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: column;
+	margin-top: auto;
+	border-top: 1px solid black;
+	padding-top: 15px;
+}
+
+.add-match > div {
+	margin-bottom: 10px;
+}
+
+.add-match > div:nth-child(2) {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+/* .add-match button {
+    width: 100%;
+    height: 10vh;
+    margin-top: 10px;
+    border: none;
+} */
+
+.match-players {
+	display: flex;
+	align-items: center;
+}
+
+.add-match-player {
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+	width: 80px;
+	padding: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.match {
+	display: flex;
+	align-items: center;
+	background-color: var(--color1);
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 10px;
+	margin-bottom: 5px;
+	border-radius: 15px;
+}
+
+.match > button {
+	margin-left: auto;
+	background-color: white;
+	border: none;
+	border-radius: 5px;
+	height: 30px;
+	width: 30px;
+	color: black;
+}
+
+.match > div {
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+.match > div:nth-child(4) {
+	margin-right: 15px;
+	margin-left: 15px;
+	font-weight: bold;
+}
+
+.match-player {
+}
