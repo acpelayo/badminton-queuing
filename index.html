@@ -5,47 +5,37 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-		<title>bq</title>
+		<title>Badminton Queuing</title>
 
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
 		<main>
 			<div id="players">
+				<h2>Players</h2>
 				<div id="player-list">
 					<!-- <div class="player" data-player-name="Sample Player">
 						<div>
+							<span class="count-games">15</span>
 							<span class="player-name">Sample Player</span>
-							<span class="count-games"> 5 games played</span>
 						</div>
 						<div>
 							<span class="count-pair">Paired X times with A</span>
-							<span class="count-against">Played Y times against B</span>
+							
 						</div>
 						<button>×</button>
 					</div> -->
 				</div>
-				<div>
-					<div id="add-player" class="add-player">
-						<input type="text" id="player-name" name="player-name" placeholder="Enter player name" maxlength="10" />
-						<button>Add Player</button>
-					</div>
+				<div id="add-player" class="add-player">
+					<input type="text" id="player-name" placeholder="Enter player name" maxlength="10" autocomplete="off" />
+					<button>+</button>
 				</div>
-				<div>
-					<div id="matches">
-						<div id="add-match" class="add-match">
-							<div class="match-players">
-								<div class="add-match-player">-</div>
-								<div class="add-match-player">-</div>
-								<div>vs</div>
-								<div class="add-match-player">-</div>
-								<div class="add-match-player">-</div>
-							</div>
-							<div><button>Add Match</button></div>
-						</div>
-						<h2>Matches</h2>
-						<div id="match-list">
-							<!-- <div class="match">
+			</div>
+			<div id="matches">
+				<h2>Matches</h2>
+
+				<div id="match-list">
+					<!-- <div class="match">
 								<div>
 									<div class="match-player">Player xxx</div>
 									<div class="match-player">Player xxx</div>
@@ -57,9 +47,21 @@
 								</div>
 								<button>×</button>
 							</div> -->
-						</div>
+				</div>
+			</div>
+			<div id="add-match" class="add-match">
+				<div class="match-players">
+					<div>
+						<div class="add-match-player">-</div>
+						<div class="add-match-player">-</div>
+					</div>
+					<span>vs</span>
+					<div>
+						<div class="add-match-player">-</div>
+						<div class="add-match-player">-</div>
 					</div>
 				</div>
+				<button>+</button>
 			</div>
 		</main>
 

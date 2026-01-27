@@ -1,9 +1,20 @@
 :root {
 	--color1: #f9b900;
-	--color2: #000000;
+	--color2: #eb6534;
 	--color3: white;
 	--color4: #000000;
-	--color5: #000000;
+	--color5: #323031;
+}
+
+button {
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+	touch-action: manipulation;
 }
 
 * {
@@ -33,42 +44,71 @@ button {
 	color: black;
 }
 
-.player,
-.add-player {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
+h2 {
+	/* border: 1px solid red; */
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+#players {
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 .player {
 	display: flex;
+	justify-content: flex-start;
+	align-items: center;
 	height: 60px;
-	padding-left: 5px;
 	padding-right: 5px;
 	margin-bottom: 5px;
 	background-color: var(--color1);
 	border-radius: 30px;
+	transition: background-color 0.25s ease-out;
+}
+
+.player.selected {
+	background-color: var(--color2);
+}
+
+.player.selected .count-games {
+	border-color: var(--color2);
 }
 
 .player > div {
 	display: flex;
-	flex-direction: column;
 }
 
 .player > div:nth-of-type(1) {
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	margin-right: 10px;
-	width: 150px;
+	min-width: 200px;
+	width: 200px;
 	height: 50px;
 	border-radius: 25px;
 	background-color: var(--color3);
 }
 
-.player-list,
-.add-player {
-	padding-top: 10px;
-	padding-bottom: 10px;
+.player > div:nth-of-type(2) {
+	/* border: 1px solid red; */
+}
+
+.player .count-games {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 30px;
+	font-weight: bold;
+	width: 60px;
+	height: 60px;
+	border: 5px solid var(--color1);
+	border-radius: 30px;
+	margin-right: 10px;
+	transition: border-color 0.25s ease-out;
+}
+
+.player .count-pair {
 }
 
 .player .player-name {
@@ -76,32 +116,58 @@ button {
 	font-weight: bold;
 }
 
-.player > button {
+.player > button,
+.add-player > button {
 	background-color: var(--color3);
 	color: red;
 	font-size: 30px;
 	border: none;
 	border-radius: 25px;
+	flex-shrink: 0;
 	height: 50px;
 	width: 50px;
 	margin-left: auto;
 }
 
 .add-player {
-	flex-direction: column;
+	display: flex;
+	align-items: center;
+	height: 60px;
+}
+
+.add-player > button {
+	color: white;
+	width: 60px;
+	height: 60px;
+	border-radius: 30px;
+	background-color: var(--color1);
 }
 
 .add-player > input {
-	width: 80%;
+	width: calc(100% - 60px - 5px);
+	height: 60px;
 	padding: 5px;
 	text-align: center;
-	margin-bottom: 5px;
-	border: 1px solid gray;
-	border-radius: 5px;
+	border: 2px solid var(--color1);
+	border-radius: 30px;
 	font-size: 16px;
+	transition: border 0.25s ease-out;
 }
 
-.add-player > button,
+.add-player > input:focus {
+	border: 3px solid var(--color2);
+	outline: none;
+}
+
+/* ADD MATCH */
+
+#matches {
+	padding-top: 15px;
+	border-top: 1px solid gray;
+	display: flex;
+	flex-direction: column;
+}
+
 .add-match button {
 	margin-left: 10px;
 	padding-left: 20px;
@@ -114,17 +180,21 @@ button {
 }
 
 .add-match {
+	background-color: var(--color2);
+	border-radius: 30px;
+	padding-left: 5px;
+	padding-right: 5px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	flex-direction: column;
-	margin-top: auto;
-	border-top: 1px solid gray;
-	padding-top: 15px;
-}
-
-.add-match > div {
-	margin-bottom: 10px;
+	height: 60px;
+	margin-bottom: 20px;
+	position: sticky;
+	bottom: 5px;
+	z-index: 1000;
+	/* left: 0;
+	right: 0; */
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
 }
 
 .add-match > div:nth-child(2) {
@@ -136,19 +206,52 @@ button {
 .match-players {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+}
+
+.match-players > div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: 25px;
+	width: 150px;
+	background-color: var(--color3);
+	height: 50px;
+	overflow: hidden;
+}
+
+.match-players > span {
+	margin-right: 10px;
+	margin-left: 10px;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.add-match > button {
+	margin-left: auto;
+	background-color: var(--color3);
+	border: none;
+	border-radius: 25px;
+	height: 50px;
+	width: 50px;
+	color: var(--color2);
+	font-size: 30px;
 }
 
 .add-match-player {
-	border: 1px solid gray;
-	border-radius: 5px;
-	text-align: center;
-	width: 80px;
-	padding: 5px;
-	margin-right: 5px;
-	margin-left: 5px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 25px;
+	width: 100%;
+	font-size: 16px;
+	background-color: none;
+	transition: background-color 0.25s ease-out;
+}
+
+.add-match-player.highlight {
+	background-color: var(--color1);
 }
 
 .match {
