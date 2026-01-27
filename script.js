@@ -71,8 +71,60 @@ class Match {
 		return -1
 	}
 
-	registerMatch(matchID) {
-		this.matchID = matchID
+	get team1() {
+		return [this.players[0], this.players[1]]
+	}
+	get team2() {
+		return [this.players[2], this.players[3]]
+	}
+
+	#createTeamDOM(team) {
+		const divPlayer1 = document.createElement('div')
+		divPlayer1.classList.add('match-player')
+		divPlayer1.textContent = team[0]
+
+		const divPlayer2 = divPlayer1.cloneNode(true)
+		divPlayer2.textContent = team[1]
+
+		const span = document.createElement('span')
+		span.textContent = '+'
+
+		const divTeam = document.createElement('div')
+		divTeam.appendChild(divPlayer1)
+		divTeam.appendChild(span)
+		divTeam.appendChild(divPlayer2)
+
+		return divTeam
+	}
+
+	createMatchDOM() {
+		const divTeam1 = this.#createTeamDOM(this.team1)
+		const divTeam2 = this.#createTeamDOM(this.team2)
+
+		const span = document.createElement('span')
+		span.textContent = 'vs'
+
+		const btn = document.createElement('button')
+		btn.textContent = '×'
+
+		const newMatch = document.createElement('div')
+		newMatch.dataset.matchId = this.matchID
+		newMatch.classList.add('match')
+
+		newMatch.appendChild(divTeam1)
+		newMatch.appendChild(span)
+		newMatch.appendChild(divTeam2)
+		newMatch.appendChild(btn)
+
+		return newMatch
+	}
+
+	get indexEmptySlot() {
+		for (let i = 0; i < this.players.length; i++) {
+			if (this.players[i] === null) return i
+		}
+
+		return -1
 	}
 }
 
@@ -81,8 +133,9 @@ class Match {
 // ------------------------------- //
 
 const players = []
-const matchPlayers = []
-const tempMatch = new Match()
+const matches = []
+
+let tempMatch = new Match()
 
 // ------------------------------- //
 // STATIC ELEMENTS
@@ -92,28 +145,18 @@ const btnAddPlayer = document.querySelector('#add-player > button')
 
 const divAddMatch = document.querySelector('#add-match')
 const divAddMatchPlayer = document.querySelectorAll('.add-match-player')
+const btnAddMatch = document.querySelector('#add-match button')
+
+const divPlayerList = document.querySelector('#player-list')
+const divMatchList = document.querySelector('#match-list')
 
 // ------------------------------- //
 // PLAYERS
 // ------------------------------- //
 
-for (let i = 0; i < 10; i++) {
-	const newPlayer = new Player('Player ' + i)
-	players.push(newPlayer)
-}
-
-const playerList = document.querySelector('#player-list')
-function populatePlayers() {
-	for (let i = 0; i < players.length; i++) {
-		playerList.appendChild(players[i].createPlayerDOM())
-	}
-}
-
-populatePlayers()
-
 // EVENT LISTENERS
-playerList.addEventListener('click', removePlayer)
-playerList.addEventListener('click', addPlayerToMatch)
+divPlayerList.addEventListener('click', removePlayer)
+divPlayerList.addEventListener('click', addPlayerToMatch)
 btnAddPlayer.addEventListener('click', addPlayer)
 
 // CLICK FUNCTIONS
@@ -124,17 +167,22 @@ function addPlayer() {
 	if (!players.some((player) => player.playerName === newPlayerName) && newPlayerName) {
 		const newPlayer = new Player(newPlayerName)
 		players.push(newPlayer)
-		playerList.appendChild(newPlayer.createPlayerDOM())
+		divPlayerList.appendChild(newPlayer.createPlayerDOM())
 		textInputAddPlayer.value = ''
 	}
 }
 
 function removePlayer(e) {
 	if (e.target.tagName !== 'BUTTON') return
-	const playerNameToRemove = e.target.closest('[data-player-name]').dataset.playerName
-	const playerObjIndex = players.findIndex((player) => player.playerName === playerNameToRemove)
-	players.splice(playerObjIndex, 1)
-	playerList.children[playerObjIndex].remove()
+
+	const divPlayer = e.target.closest('[data-player-name]')
+	if (!divPlayer) return
+
+	const playerNameToRemove = divPlayer.dataset.playerName
+	const playerIndex = players.findIndex((player) => player === playerNameToRemove)
+
+	players[playerIndex] = null
+	divPlayer.remove()
 }
 
 function addPlayerToMatch(e) {
@@ -156,6 +204,13 @@ function addPlayerToMatch(e) {
 
 // EVENT LISTENER
 divAddMatch.addEventListener('click', removePlayerFromMatch)
+btnAddMatch.addEventListener('click', addMatch)
+
+divMatchList.addEventListener('click', removeMatch)
+
+function clickRemovePlayerFromMatch() {}
+function clickAddMatch() {}
+function clickRemoveMatch() {}
 
 // CLICK EVENTS
 function removePlayerFromMatch(e) {
@@ -171,16 +226,65 @@ function removePlayerFromMatch(e) {
 		delete currentPlayer.dataset.playerName
 		currentPlayer.textContent = '-'
 	}
-
-	// for (let i = 0; i < divAddMatchPlayer.length; i++) {
-	// 	const currentPlayer = divAddMatchPlayer[i]
-	// 	if (currentPlayer.dataset.playerName === playerToRemove) {
-	// 		delete currentPlayer.dataset.playerName
-	// 		currentPlayer.textContent = '-'
-
-	// 		const indexPlayerToRemove = matchPlayers.findIndex((playerName) => playerName === playerToRemove)
-	// 		matchPlayers.splice(indexPlayerToRemove, 1)
-	// 		break
-	// 	}
-	// }
 }
+
+function addMatch() {
+	// check if players are complete
+	if (!(tempMatch.indexEmptySlot === -1)) return
+
+	tempMatch.matchID = matches.length
+
+	matches.push(tempMatch)
+	divMatchList.prepend(tempMatch.createMatchDOM())
+
+	// reset
+	tempMatch = new Match()
+	for (let i = 0; i < divAddMatchPlayer.length; i++) {
+		divAddMatchPlayer[i].textContent = '-'
+	}
+
+	console.log(players)
+}
+
+function removeMatch(e) {
+	if (e.target.tagName !== 'BUTTON') return
+
+	const divMatch = e.target.closest('[data-match-id]')
+	if (!divMatch) return
+
+	const matchIDToRemove = divMatch.dataset.matchId
+	const matchIndex = players.findIndex((player) => player === matchIDToRemove)
+
+	matches[matchIndex] = null
+	divMatch.remove()
+}
+
+// ------------------------------- //
+// TEST DATA
+// ------------------------------- //
+
+function populatePlayers() {
+	for (let i = 0; i < 4; i++) {
+		const newPlayer = new Player('Player ' + i)
+		players.push(newPlayer)
+	}
+	for (let i = 0; i < players.length; i++) {
+		divPlayerList.appendChild(players[i].createPlayerDOM())
+	}
+}
+
+function populateMatches() {
+	for (let i = 0; i < 4; i++) {
+		const newMatch = new Match()
+		newMatch.players = ['Player 1', 'Player 2', 'Player 3', 'Player 4']
+		newMatch.matchID = matches.length
+		matches.push(newMatch)
+	}
+
+	for (let i = 0; i < matches.length; i++) {
+		divMatchList.prepend(matches[i].createMatchDOM())
+	}
+}
+
+populatePlayers()
+populateMatches()
