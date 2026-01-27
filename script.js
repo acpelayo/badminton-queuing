@@ -13,19 +13,44 @@ class Player {
 	}
 
 	createPlayerDOM() {
-		const playerName = document.createElement('span')
-		playerName.textContent = this.playerName
+		const spanPlayerName = document.createElement('span')
+		const spanGameCount = document.createElement('span')
+		const spanPairCount = document.createElement('span')
+		const spanAgainstCount = document.createElement('span')
+
+		spanPlayerName.classList.add('player-name')
+		spanGameCount.classList.add('count-games')
+
+		spanPairCount.classList.add('count-pair')
+		spanPairCount.classList.add('hidden')
+		spanAgainstCount.classList.add('count-against')
+		spanAgainstCount.classList.add('hidden')
+
+		spanPlayerName.textContent = this.playerName
+		spanGameCount.textContent = `${this.matches.length} games played`
+
+		spanPairCount.textContent = 'Paired X times with A'
+		spanAgainstCount.textContent = 'Played Y times against B'
+
+		const div1 = document.createElement('div')
+		const div2 = document.createElement('div')
+
+		div1.appendChild(spanPlayerName)
+		div1.appendChild(spanGameCount)
+		div2.appendChild(spanPairCount)
+		div2.appendChild(spanAgainstCount)
 
 		const btn = document.createElement('button')
 		btn.textContent = '×'
 
-		const newPlayer = document.createElement('div')
+		const divNewPlayer = document.createElement('div')
 
-		newPlayer.appendChild(playerName)
-		newPlayer.appendChild(btn)
-		newPlayer.classList.add('player')
-		newPlayer.dataset.playerName = this.playerName
-		return newPlayer
+		divNewPlayer.appendChild(div1)
+		divNewPlayer.appendChild(div2)
+		divNewPlayer.appendChild(btn)
+		divNewPlayer.classList.add('player')
+		divNewPlayer.dataset.playerName = this.playerName
+		return divNewPlayer
 	}
 }
 
@@ -71,6 +96,24 @@ class Match {
 		return -1
 	}
 
+	includesPlayer(playerName) {
+		return this.players.includes(playerName)
+	}
+
+	isPlayerPaired(playerName1, playerName2) {
+		const isPairedInTeam1 = this.team1.includes(playerName1) && this.team1.includes(playerName2)
+		const isPairedInTeam2 = this.team2.includes(playerName1) && this.team2.includes(playerName2)
+
+		return isPairedInTeam1 || isPairedInTeam2
+	}
+
+	isPlayerAgainst(playerName1, playerName2) {
+		const isAgainst1 = this.team1.includes(playerName1) && this.team2.includes(playerName2)
+		const isAgainst2 = this.team1.includes(playerName2) && this.team2.includes(playerName1)
+
+		return isAgainst1 || isAgainst2
+	}
+
 	get team1() {
 		return [this.players[0], this.players[1]]
 	}
@@ -86,12 +129,8 @@ class Match {
 		const divPlayer2 = divPlayer1.cloneNode(true)
 		divPlayer2.textContent = team[1]
 
-		const span = document.createElement('span')
-		span.textContent = '+'
-
 		const divTeam = document.createElement('div')
 		divTeam.appendChild(divPlayer1)
-		divTeam.appendChild(span)
 		divTeam.appendChild(divPlayer2)
 
 		return divTeam
@@ -205,12 +244,7 @@ function addPlayerToMatch(e) {
 // EVENT LISTENER
 divAddMatch.addEventListener('click', removePlayerFromMatch)
 btnAddMatch.addEventListener('click', addMatch)
-
 divMatchList.addEventListener('click', removeMatch)
-
-function clickRemovePlayerFromMatch() {}
-function clickAddMatch() {}
-function clickRemoveMatch() {}
 
 // CLICK EVENTS
 function removePlayerFromMatch(e) {
@@ -237,6 +271,15 @@ function addMatch() {
 	matches.push(tempMatch)
 	divMatchList.prepend(tempMatch.createMatchDOM())
 
+	// update player database
+	for (let i = 0; i < players.length; i++) {
+		const currentPlayer = players[i]
+		if (tempMatch.includesPlayer(currentPlayer.playerName)) {
+			currentPlayer.matches.push(tempMatch.matchID)
+		}
+	}
+	updatePlayersGameCount()
+
 	// reset
 	tempMatch = new Match()
 	for (let i = 0; i < divAddMatchPlayer.length; i++) {
@@ -260,29 +303,58 @@ function removeMatch(e) {
 }
 
 // ------------------------------- //
+// DOM UPDATE FUNCTIONS
+// ------------------------------- //
+function updatePlayersGameCount() {
+	const divPlayers = divPlayerList.querySelectorAll('.player')
+	for (let i = 0; i < divPlayers.length; i++) {
+		const divCurrentPlayer = divPlayers[i]
+
+		const playerName = divCurrentPlayer.dataset.playerName
+
+		const playerObj = players.find((player) => player.playerName === playerName)
+
+		if (playerObj) {
+			const gameCount = playerObj.matches.length
+			divCurrentPlayer.querySelector('.count-games').textContent = `${gameCount} game${gameCount === 1 ? '' : 's'} played`
+		}
+	}
+}
+
+// ------------------------------- //
+// UTILITY FUNCTION
+// ------------------------------- //
+function countMatchesPaired(player1, player2) {
+	let pairedCount = 0
+
+	for (let i = 0; i < matches.length; i++) {
+		const currentMatch = matches[i]
+		if (currentMatch.isPlayerPaired(player1, player2)) pairedCount++
+	}
+	return pairedCount
+}
+
+// ------------------------------- //
 // TEST DATA
 // ------------------------------- //
 
 function populatePlayers() {
-	for (let i = 0; i < 4; i++) {
-		const newPlayer = new Player('Player ' + i)
-		players.push(newPlayer)
-	}
-	for (let i = 0; i < players.length; i++) {
-		divPlayerList.appendChild(players[i].createPlayerDOM())
+	for (let i = 0; i < 5; i++) {
+		textInputAddPlayer.value = 'Player ' + i
+		btnAddPlayer.click()
 	}
 }
 
 function populateMatches() {
-	for (let i = 0; i < 4; i++) {
-		const newMatch = new Match()
-		newMatch.players = ['Player 1', 'Player 2', 'Player 3', 'Player 4']
-		newMatch.matchID = matches.length
-		matches.push(newMatch)
-	}
+	for (let i = 0; i < 5; i++) {
+		const divPlayers = divPlayerList.querySelectorAll('.player')
 
-	for (let i = 0; i < matches.length; i++) {
-		divMatchList.prepend(matches[i].createMatchDOM())
+		divPlayers[0].click()
+		divPlayers[1].click()
+		divPlayers[2].click()
+		divPlayers[3].click()
+
+		btnAddMatch.click()
 	}
 }
 
