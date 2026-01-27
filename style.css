@@ -15,6 +15,7 @@ button {
 html,
 body {
 	touch-action: manipulation;
+	/* background-color: var(--color3); */
 }
 
 * {
@@ -87,7 +88,7 @@ h2 {
 	width: 200px;
 	height: 50px;
 	border-radius: 25px;
-	background-color: var(--color3);
+	background-color: white;
 }
 
 .player > div:nth-of-type(2) {
@@ -118,7 +119,7 @@ h2 {
 
 .player > button,
 .add-player > button {
-	background-color: var(--color3);
+	background-color: white;
 	color: red;
 	font-size: 30px;
 	border: none;
@@ -216,7 +217,7 @@ h2 {
 	justify-content: center;
 	border-radius: 25px;
 	width: 150px;
-	background-color: var(--color3);
+	background-color: white;
 	height: 50px;
 	overflow: hidden;
 }
@@ -226,12 +227,12 @@ h2 {
 	margin-left: 10px;
 	font-weight: bold;
 	font-size: 16px;
-	color: var(--color3);
+	color: white;
 }
 
 .add-match > button {
 	margin-left: auto;
-	background-color: var(--color3);
+	background-color: white;
 	border: none;
 	border-radius: 25px;
 	height: 50px;
@@ -273,13 +274,13 @@ h2 {
 	justify-content: center;
 	border-radius: 25px;
 	width: 150px;
-	background-color: var(--color3);
+	background-color: white;
 	height: 50px;
 }
 
 .match > button {
 	margin-left: auto;
-	background-color: var(--color3);
+	background-color: white;
 	border: none;
 	border-radius: 25px;
 	height: 50px;
