@@ -15,7 +15,8 @@ button {
 	transition: transform 0.1s ease-out;
 }
 
-button:active {
+button:active,
+button:hover {
 	transform: scale(1.1);
 }
 
@@ -28,7 +29,6 @@ input {
 html,
 body {
 	touch-action: manipulation;
-	/* background-color: var(--color-white); */
 }
 
 * {
@@ -59,7 +59,6 @@ button {
 }
 
 h2 {
-	/* border: 1px solid red; */
 	text-align: center;
 	margin-bottom: 10px;
 }
@@ -104,10 +103,6 @@ h2 {
 	background-color: white;
 }
 
-.player > div:nth-of-type(2) {
-	/* border: 1px solid red; */
-}
-
 .player .count-games {
 	display: flex;
 	justify-content: center;
@@ -120,9 +115,6 @@ h2 {
 	border-radius: 30px;
 	margin-right: 10px;
 	transition: border-color 0.25s ease-out;
-}
-
-.player .count-pair {
 }
 
 .player .player-name {
@@ -160,7 +152,8 @@ h2 {
 .add-player > input {
 	width: calc(100% - 60px - 5px);
 	height: 60px;
-	padding: 5px;
+	padding-right: 15px;
+	padding-left: 15px;
 	text-align: center;
 	border: 2px solid var(--color-secondary);
 	border-radius: 30px;

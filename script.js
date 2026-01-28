@@ -67,6 +67,7 @@ class Match {
 	constructor() {
 		this.players = new Array(4).fill(null)
 		this.matchID = null
+		this.winner = null
 	}
 
 	addPlayer(playerName) {
@@ -149,6 +150,7 @@ class Match {
 		divPlayer2.textContent = team[1]
 
 		const divTeam = document.createElement('div')
+		divTeam.classList.add('team')
 		divTeam.appendChild(divPlayer1)
 		divTeam.appendChild(divPlayer2)
 
@@ -429,6 +431,8 @@ function deleteMatch(e) {
 	uploadToLocalStorage()
 	reloadPlayers()
 }
+
+function setWinner(e) {}
 
 // ------------------------------- //
 // DOM UPDATE FUNCTIONS
