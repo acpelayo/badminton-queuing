@@ -368,7 +368,24 @@ function addMatch() {
 	tempMatch.matchID = matches.length
 
 	matches.push(tempMatch)
-	divMatchList.prepend(tempMatch.createMatchDOM())
+
+	const divMatches = divMatchList.querySelectorAll('.match')
+	const divNewMatch = tempMatch.createMatchDOM()
+
+	divNewMatch.classList.add('animate-fade-from-above')
+	setTimeout(() => {
+		divNewMatch.classList.remove('animate-fade-from-above')
+	}, 500)
+	divMatchList.prepend(divNewMatch)
+
+	divMatches.forEach((divMatch) => {
+		divMatch.classList.add('animate-move-down')
+	})
+	setTimeout(() => {
+		divMatches.forEach((divMatch) => {
+			divMatch.classList.remove('animate-move-down')
+		})
+	}, 500)
 
 	// update player database
 	for (let i = 0; i < players.length; i++) {
@@ -379,7 +396,6 @@ function addMatch() {
 		}
 	}
 
-	updatePlayersGameCount()
 	uploadToLocalStorage()
 	reloadPlayers()
 
@@ -411,29 +427,29 @@ function deleteMatch(e) {
 	})
 
 	uploadToLocalStorage()
-	updatePlayersGameCount()
+	reloadPlayers()
 }
 
 // ------------------------------- //
 // DOM UPDATE FUNCTIONS
 // ------------------------------- //
-function updatePlayersGameCount() {
-	const divPlayers = divPlayerList.querySelectorAll('.player')
-	for (let i = 0; i < divPlayers.length; i++) {
-		const divCurrentPlayer = divPlayers[i]
+// function updatePlayersGameCount() {
+// 	const divPlayers = divPlayerList.querySelectorAll('.player')
+// 	for (let i = 0; i < divPlayers.length; i++) {
+// 		const divCurrentPlayer = divPlayers[i]
 
-		const playerName = divCurrentPlayer.dataset.playerName
+// 		const playerName = divCurrentPlayer.dataset.playerName
 
-		const playerObj = players.find((player) => {
-			if (player === null) return null
-			return player.playerName === playerName
-		})
+// 		const playerObj = players.find((player) => {
+// 			if (player === null) return null
+// 			return player.playerName === playerName
+// 		})
 
-		if (playerObj) {
-			divCurrentPlayer.querySelector('.count-games').textContent = playerObj.matchCount
-		}
-	}
-}
+// 		if (playerObj) {
+// 			divCurrentPlayer.querySelector('.count-games').textContent = playerObj.matchCount
+// 		}
+// 	}
+// }
 
 function updatePlayersPairedCount() {
 	const divPlayers = divPlayerList.querySelectorAll('.player')
@@ -479,15 +495,16 @@ function reloadPlayers() {
 	const divPlayers = divPlayerList.querySelectorAll('.player')
 	divPlayers.forEach((player) => player.remove())
 
-	const sortedPlayers = players.sort((p1, p2) => {
-		if (p1 === null || p2 === null) return 0
+	const sortedPlayers = players
+		.filter((player) => player !== null)
+		.sort((p1, p2) => {
+			if (p1 === null || p2 === null) return 0
 
-		const result1 = p1.matchCount - p2.matchCount
+			const result = p1.matchCount - p2.matchCount
+			if (result !== 0) return result
 
-		if (result1 !== 0) return result1
-
-		return p1.playerName.localeCompare(p2.playerName)
-	})
+			return p1.playerName.localeCompare(p2.playerName)
+		})
 
 	sortedPlayers.forEach((player) => {
 		if (player === null) return
