@@ -54,6 +54,8 @@ export class Player {
 		divNewPlayer.dataset.playerName = this.playerName
 		return divNewPlayer
 	}
+
+	static fromJSON() {}
 }
 
 export class Match {
@@ -171,4 +173,6 @@ export class Match {
 
 		return newMatch
 	}
+
+	static fromJSON() {}
 }
