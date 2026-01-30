@@ -1,8 +1,18 @@
 import { Player, Match } from './classes.js'
 
+import { clickAddPlayer } from './dom.js'
+
 // ------------------------------- //
 // GLOBALS
 // ------------------------------- //
+
+// EVENT LISTENERS
+
+// divPlayerList.addEventListener('click', removePlayer)
+// divPlayerList.addEventListener('click', togglePlayerFromMatch)
+
+const btnAddPlayer = document.querySelector('#add-player > button')
+btnAddPlayer.addEventListener('click', clickAddPlayer)
 
 // LOCAL STORAGE INIT
 let storedPlayers = localStorage.getItem('players')
@@ -12,7 +22,7 @@ if (storedPlayers) {
 	storedPlayers = JSON.parse(storedPlayers).map((player) => {
 		if (player === null) return null
 
-		const newPlayer = new Player(player.playerName)
+		const newPlayer = new Player(player.id)
 		newPlayer.matches = player.matches
 
 		return newPlayer
@@ -48,26 +58,8 @@ function uploadToLocalStorage() {
 }
 
 // ------------------------------- //
-// STATIC ELEMENTS
-// ------------------------------- //
-const textInputAddPlayer = document.querySelector('#add-player > input')
-const btnAddPlayer = document.querySelector('#add-player > button')
-
-const divAddMatch = document.querySelector('#add-match')
-const divAddMatchPlayer = document.querySelectorAll('.add-match-player')
-const btnAddMatch = document.querySelector('#add-match button')
-
-const divPlayerList = document.querySelector('#player-list')
-const divMatchList = document.querySelector('#match-list')
-
-// ------------------------------- //
 // PLAYERS
 // ------------------------------- //
-
-// EVENT LISTENERS
-divPlayerList.addEventListener('click', removePlayer)
-divPlayerList.addEventListener('click', togglePlayerFromMatch)
-btnAddPlayer.addEventListener('click', addPlayer)
 
 // CLICK FUNCTIONS
 function addPlayer() {
@@ -77,7 +69,7 @@ function addPlayer() {
 	if (
 		players.find((player) => {
 			if (player === null) return null
-			return player.playerName === newPlayerName
+			return player.id === newPlayerName
 		}) ||
 		!newPlayerName
 	)
@@ -104,10 +96,10 @@ function removePlayer(e) {
 	const divPlayer = e.target.closest('[data-player-name]')
 	if (!divPlayer) return
 
-	const playerNameToRemove = divPlayer.dataset.playerName
+	const playerNameToRemove = divPlayer.dataset.id
 	const playerIndex = players.findIndex((player) => {
 		if (player === null) return null
-		return player.playerName === playerNameToRemove
+		return player.id === playerNameToRemove
 	})
 
 	players[playerIndex] = null
@@ -120,7 +112,7 @@ function togglePlayerFromMatch(e) {
 	if (e.target.tagName === 'BUTTON') return
 
 	const divPlayer = e.target.closest('.player')
-	const playerName = divPlayer.dataset.playerName
+	const playerName = divPlayer.dataset.id
 	if (!playerName) return
 
 	let index = -1
@@ -131,14 +123,14 @@ function togglePlayerFromMatch(e) {
 
 		divPlayer.classList.remove('selected')
 		divAddMatchPlayer[index].textContent = '-'
-		delete divAddMatchPlayer[index].dataset.playerName
+		delete divAddMatchPlayer[index].dataset.id
 	} else {
 		index = tempMatch.addPlayer(playerName)
 		if (index === -1) return
 
 		divPlayer.classList.add('selected')
 		divAddMatchPlayer[index].textContent = playerName
-		divAddMatchPlayer[index].dataset.playerName = playerName
+		divAddMatchPlayer[index].dataset.id = playerName
 	}
 
 	updatePlayersPairedCount()
@@ -150,30 +142,30 @@ function togglePlayerFromMatch(e) {
 // ------------------------------- //
 
 // EVENT LISTENER
-divAddMatch.addEventListener('click', removePlayerFromMatch)
-btnAddMatch.addEventListener('click', addMatch)
-textInputAddPlayer.addEventListener('keydown', (e) => {
-	if (e.key === 'Enter') addPlayer()
-})
-divMatchList.addEventListener('click', deleteMatch)
+// divAddMatch.addEventListener('click', removePlayerFromMatch)
+// btnAddMatch.addEventListener('click', addMatch)
+// textInputAddPlayer.addEventListener('keydown', (e) => {
+// 	if (e.key === 'Enter') addPlayer()
+// })
+// divMatchList.addEventListener('click', deleteMatch)
 
 // CLICK EVENTS
 function removePlayerFromMatch(e) {
 	const targetPlayer = e.target.closest('[data-player-name]')
 	if (!targetPlayer) return
 
-	const playerToRemove = targetPlayer.dataset.playerName
+	const playerToRemove = targetPlayer.dataset.id
 	if (!playerToRemove) return
 
 	const index = tempMatch.removePlayer(playerToRemove)
 	if (index !== -1) {
 		const currentPlayer = divAddMatchPlayer[index]
-		delete currentPlayer.dataset.playerName
+		delete currentPlayer.dataset.id
 		currentPlayer.textContent = '-'
 
 		const divPlayers = divPlayerList.querySelectorAll('.player')
 		for (let i = 0; i < divPlayers.length; i++) {
-			if (divPlayers[i].dataset.playerName === playerToRemove) {
+			if (divPlayers[i].dataset.id === playerToRemove) {
 				divPlayers[i].classList.remove('selected')
 			}
 		}
@@ -213,7 +205,7 @@ function addMatch() {
 	for (let i = 0; i < players.length; i++) {
 		const currentPlayer = players[i]
 		if (currentPlayer === null) continue
-		if (tempMatch.includesPlayer(currentPlayer.playerName)) {
+		if (tempMatch.includesPlayer(currentPlayer.id)) {
 			currentPlayer.matches.push(tempMatch.matchID)
 		}
 	}
@@ -313,7 +305,7 @@ function highlightNextEmptyPlayerSlot() {
 		else divAddMatchPlayer[i].classList.remove('highlight')
 	}
 }
-highlightNextEmptyPlayerSlot()
+// highlightNextEmptyPlayerSlot()
 
 function reloadPlayers() {
 	const divPlayers = divPlayerList.querySelectorAll('.player')
@@ -327,7 +319,7 @@ function reloadPlayers() {
 			const result = p1.matchCount - p2.matchCount
 			if (result !== 0) return result
 
-			return p1.playerName.localeCompare(p2.playerName)
+			return p1.id.localeCompare(p2.id)
 		})
 
 	sortedPlayers.forEach((player) => {
@@ -335,7 +327,7 @@ function reloadPlayers() {
 		divPlayerList.appendChild(player.createPlayerDOM())
 	})
 }
-reloadPlayers()
+// reloadPlayers()
 
 function reloadMatches() {
 	const divMatches = divMatchList.querySelectorAll('.match')
@@ -346,7 +338,7 @@ function reloadMatches() {
 		divMatchList.prepend(match.createMatchDOM())
 	})
 }
-reloadMatches()
+// reloadMatches()
 
 // ------------------------------- //
 // UTILITY FUNCTIONS

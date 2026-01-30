@@ -1,29 +1,43 @@
-function addPlayer() {
-	const newPlayerName = textInputAddPlayer.value.trim()
+import db from './database.js'
 
-	// validate if player exist
-	if (
-		players.find((player) => {
-			if (player === null) return null
-			return player.playerName === newPlayerName
-		}) ||
-		!newPlayerName
-	)
-		return
+// ------------------------------- //
+// STATIC ELEMENTS
+// ------------------------------- //
+const textInputAddPlayer = document.querySelector('#add-player > input')
 
-	const newPlayer = new Player(newPlayerName)
-	matches.forEach((match) => {
-		if (match === null) return
+const divAddMatch = document.querySelector('#add-match')
+const divAddMatchPlayer = document.querySelectorAll('.add-match-player')
+const btnAddMatch = document.querySelector('#add-match button')
 
-		if (match.includesPlayer(newPlayerName)) newPlayer.matches.push(match.matchID)
-	})
-	players.push(newPlayer)
-	divPlayerList.appendChild(newPlayer.createPlayerDOM())
-	textInputAddPlayer.value = ''
+const divPlayerList = document.querySelector('#player-list')
+const divMatchList = document.querySelector('#match-list')
 
-	uploadToLocalStorage()
-	reloadPlayers()
-	textInputAddPlayer.focus()
+export function clickAddPlayer(e) {
+	const textInputBox = e.target.previousElementSibling
+	const newPlayerName = textInputBox.value.trim()
+	if (!newPlayerName) return
+
+	addPlayer(newPlayerName)
+
+	textInputBox.value = ''
+	textInputBox.focus()
 }
 
-export default {}
+function addPlayer(newPlayerName) {
+	const newPlayer = db.addPlayer(newPlayerName)
+	if (!newPlayer) return
+	// matches.forEach((match) => {
+	// 	if (match === null) return
+
+	// 	if (match.includesPlayer(newPlayerName)) newPlayer.matches.push(match.matchID)
+	// })
+	// players.push(newPlayer)
+	// divPlayerList.appendChild(newPlayer.createPlayerDOM())
+	// textInputAddPlayer.value = ''
+
+	// uploadToLocalStorage()
+	// reloadPlayers()
+	// textInputAddPlayer.focus()
+}
+
+export default { clickAddPlayer }

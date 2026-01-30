@@ -1,6 +1,6 @@
 export class Player {
 	constructor(playerName) {
-		this.playerName = playerName
+		this.id = playerName
 		this.matches = []
 	}
 
@@ -29,7 +29,7 @@ export class Player {
 		// spanAgainstCount.classList.add('hidden')
 
 		spanGameCount.textContent = this.matchCount
-		spanPlayerName.textContent = this.playerName
+		spanPlayerName.textContent = this.id
 
 		spanPairCount.textContent = ''
 		// spanAgainstCount.textContent = ''
@@ -51,7 +51,7 @@ export class Player {
 		divNewPlayer.appendChild(div2)
 		divNewPlayer.appendChild(btn)
 		divNewPlayer.classList.add('player')
-		divNewPlayer.dataset.playerName = this.playerName
+		divNewPlayer.dataset.playerName = this.id
 		return divNewPlayer
 	}
 
@@ -61,7 +61,7 @@ export class Player {
 export class Match {
 	constructor() {
 		this.players = new Array(4).fill(null)
-		this.matchID = null
+		this.id = null
 		this.winner = null
 	}
 
@@ -108,16 +108,16 @@ export class Match {
 		return this.players.includes(playerName)
 	}
 
-	arePlayersPaired(playerName1, playerName2) {
-		const isPairedInTeam1 = this.team1.includes(playerName1) && this.team1.includes(playerName2)
-		const isPairedInTeam2 = this.team2.includes(playerName1) && this.team2.includes(playerName2)
+	arePlayersPaired(playerId1, playerId2) {
+		const isPairedInTeam1 = this.team1.includes(playerId1) && this.team1.includes(playerId2)
+		const isPairedInTeam2 = this.team2.includes(playerId1) && this.team2.includes(playerId2)
 
 		return isPairedInTeam1 || isPairedInTeam2
 	}
 
-	isPlayerAgainst(playerName1, playerName2) {
-		const isAgainst1 = this.team1.includes(playerName1) && this.team2.includes(playerName2)
-		const isAgainst2 = this.team1.includes(playerName2) && this.team2.includes(playerName1)
+	isPlayerAgainst(playerId1, playerId2) {
+		const isAgainst1 = this.team1.includes(playerId1) && this.team2.includes(playerId2)
+		const isAgainst2 = this.team1.includes(playerId2) && this.team2.includes(playerId1)
 
 		return isAgainst1 || isAgainst2
 	}
@@ -163,7 +163,7 @@ export class Match {
 		btn.textContent = '×'
 
 		const newMatch = document.createElement('div')
-		newMatch.dataset.matchId = this.matchID
+		newMatch.dataset.id = this.id
 		newMatch.classList.add('match')
 
 		newMatch.appendChild(divTeam1)

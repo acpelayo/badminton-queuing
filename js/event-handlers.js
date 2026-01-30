@@ -1,5 +1,5 @@
-import db from './database'
-import { Player, Match } from './classes'
+import db from './database.js'
+import { Player, Match } from './classes.js'
 
 function clickAddPlayer(e) {}
 function clickAddMatch(e) {}
