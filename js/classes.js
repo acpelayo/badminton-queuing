@@ -8,13 +8,15 @@ export class Player {
 		return this.matches.length
 	}
 
-	deleteMatch(matchID) {
-		const i = this.matches.indexOf(matchID)
-		if (i === -1) return
-		this.matches.splice(i, 1)
+	addMatch(matchId) {
+		this.matches.push(matchId)
 	}
 
-	createPlayerDOM() {
+	deleteMatch(matchId) {
+		this.matches = this.matches.filter((id) => id === matchId)
+	}
+
+	createPlayerElement() {
 		const spanGameCount = document.createElement('span')
 		const spanPlayerName = document.createElement('span')
 		const spanPairCount = document.createElement('span')
@@ -50,62 +52,29 @@ export class Player {
 		divNewPlayer.appendChild(div1)
 		divNewPlayer.appendChild(div2)
 		divNewPlayer.appendChild(btn)
-		divNewPlayer.classList.add('player')
-		divNewPlayer.dataset.playerName = this.id
+		divNewPlayer.classList.add('player', 'pill')
+		divNewPlayer.dataset.id = this.id
 		return divNewPlayer
 	}
 
-	static fromJSON() {}
+	static fromJSON({ id, matches }) {
+		const newPlayer = new Player()
+		newPlayer.id = id
+		newPlayer.matches = matches
+
+		return newPlayer
+	}
 }
 
 export class Match {
-	constructor() {
-		this.players = new Array(4).fill(null)
-		this.id = null
+	constructor(players) {
+		this.players = players
+		this.id = Date.now()
 		this.winner = null
 	}
 
-	addPlayer(playerName) {
-		let iFirstNull = -1
-		let playerAlreadyExists = false
-
-		// find first blank slot
-		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i] === null) {
-				iFirstNull = i
-				break
-			}
-		}
-
-		// check if player is already in match
-		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i] === playerName) {
-				playerAlreadyExists = true
-				break
-			}
-		}
-
-		if (iFirstNull != -1 && !playerAlreadyExists) {
-			this.players[iFirstNull] = playerName
-			return iFirstNull
-		} else {
-			return -1
-		}
-	}
-
-	removePlayer(playerName) {
-		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i] === playerName) {
-				this.players[i] = null
-				return i
-			}
-		}
-
-		return -1
-	}
-
-	includesPlayer(playerName) {
-		return this.players.includes(playerName)
+	includesPlayer(playerId) {
+		return this.players.includes(playerId)
 	}
 
 	arePlayersPaired(playerId1, playerId2) {
@@ -128,33 +97,26 @@ export class Match {
 	get team2() {
 		return [this.players[2], this.players[3]].filter((player) => player !== null)
 	}
-	get iFirstEmptySlot() {
-		for (let i = 0; i < this.players.length; i++) {
-			if (this.players[i] === null) return i
-		}
 
-		return -1
-	}
+	#createTeamElement(team) {
+		const spanPlayer1 = document.createElement('span')
+		spanPlayer1.classList.add('match-player')
+		spanPlayer1.textContent = team[0]
 
-	#createTeamDOM(team) {
-		const divPlayer1 = document.createElement('div')
-		divPlayer1.classList.add('match-player')
-		divPlayer1.textContent = team[0]
-
-		const divPlayer2 = divPlayer1.cloneNode(true)
-		divPlayer2.textContent = team[1]
+		const spanPlayer2 = spanPlayer1.cloneNode(true)
+		spanPlayer2.textContent = team[1]
 
 		const divTeam = document.createElement('div')
 		divTeam.classList.add('team')
-		divTeam.appendChild(divPlayer1)
-		divTeam.appendChild(divPlayer2)
+		divTeam.appendChild(spanPlayer1)
+		divTeam.appendChild(spanPlayer2)
 
 		return divTeam
 	}
 
-	createMatchDOM() {
-		const divTeam1 = this.#createTeamDOM(this.team1)
-		const divTeam2 = this.#createTeamDOM(this.team2)
+	createMatchElement() {
+		const divTeam1 = this.#createTeamElement(this.team1)
+		const divTeam2 = this.#createTeamElement(this.team2)
 
 		const span = document.createElement('span')
 		span.textContent = 'vs'
@@ -164,7 +126,7 @@ export class Match {
 
 		const newMatch = document.createElement('div')
 		newMatch.dataset.id = this.id
-		newMatch.classList.add('match')
+		newMatch.classList.add('match', 'pill')
 
 		newMatch.appendChild(divTeam1)
 		newMatch.appendChild(span)
@@ -174,5 +136,79 @@ export class Match {
 		return newMatch
 	}
 
-	static fromJSON() {}
+	static fromJSON({ players, id, winner }) {
+		const newMatch = new Match(players)
+		newMatch.id = id
+		newMatch.winner = winner
+
+		return newMatch
+	}
+}
+
+export class MatchFactory {
+	static currentPlayers = new Array(4).fill(null)
+
+	static addPlayer(playerId) {
+		let iFirstNull = -1
+		let playerAlreadyExists = false
+
+		// find first blank slot
+		for (let i = 0; i < this.currentPlayers.length; i++) {
+			if (this.currentPlayers[i] === null) {
+				iFirstNull = i
+				break
+			}
+		}
+
+		// check if player is already in match
+		for (let i = 0; i < this.currentPlayers.length; i++) {
+			if (this.currentPlayers[i] === playerId) {
+				playerAlreadyExists = true
+				break
+			}
+		}
+
+		if (iFirstNull !== -1 && !playerAlreadyExists) {
+			this.currentPlayers[iFirstNull] = playerId
+			return iFirstNull
+		} else {
+			return -1
+		}
+	}
+	static removePlayer(playerId) {
+		for (let i = 0; i < this.currentPlayers.length; i++) {
+			if (this.currentPlayers[i] === playerId) {
+				this.currentPlayers[i] = null
+				return i
+			}
+		}
+
+		return -1
+	}
+	static includesPlayer(playerId) {
+		return this.currentPlayers.includes(playerId)
+	}
+	static createMatch() {
+		// check if players are complete
+		if (this.currentPlayers.includes(null)) return null
+		const newMatch = new Match(this.currentPlayers)
+		this.currentPlayers = new Array(4).fill(null)
+		return newMatch
+	}
+	static get isFull() {
+		return !MatchFactory.currentPlayers.includes(null)
+	}
+	static get team1() {
+		return [this.currentPlayers[0], this.currentPlayers[1]].filter((player) => player !== null)
+	}
+	static get team2() {
+		return [this.currentPlayers[2], this.currentPlayers[3]].filter((player) => player !== null)
+	}
+	static get iFirstEmptySlot() {
+		for (let i = 0; i < this.currentPlayers.length; i++) {
+			if (this.currentPlayers[i] === null) return i
+		}
+
+		return -1
+	}
 }

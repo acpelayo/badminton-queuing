@@ -1,13 +1,114 @@
 import db from './database.js'
-import { Player, Match } from './classes.js'
+import dom from './dom.js'
+import { Player, Match, MatchFactory } from './classes.js'
 
-function clickAddPlayer(e) {}
-function clickAddMatch(e) {}
+function addPlayer(e) {
+	if (e.type !== 'click' && e.key !== 'Enter') return
 
-function clickPlayer(e) {}
+	let textIinputPlayerName = e.target
+	if (e.type === 'click') {
+		textIinputPlayerName = textIinputPlayerName.previousElementSibling
+	}
+
+	const newPlayerId = textIinputPlayerName.value.trim()
+	if (!newPlayerId) return
+
+	const newPlayerInstance = db.addPlayer(newPlayerId)
+
+	// null is returned if player already exists
+	if (newPlayerInstance === null) return
+
+	dom.addPlayer(newPlayerInstance)
+
+	textIinputPlayerName.value = ''
+	textIinputPlayerName.focus()
+}
+
+function addMatch(e) {
+	// check if players are complete
+	if (!MatchFactory.isFull) return
+
+	const newMatch = MatchFactory.createMatch()
+	db.addMatch(newMatch)
+
+	dom.updateMatchQueue()
+	dom.reloadPlayerList()
+	dom.addMatch(newMatch)
+	// dom.clearHighlightedPlayers()
+
+	return
+}
+
+function clickPlayer(e) {
+	if (e.target.tagName === 'BUTTON') return
+
+	const elementPlayer = e.target.closest('.player')
+	if (!elementPlayer) return
+	const playerId = elementPlayer.dataset.id
+	if (!playerId) return
+
+	const isHighlighted = elementPlayer.classList.contains('highlight')
+
+	let index
+	if (isHighlighted) {
+		index = MatchFactory.removePlayer(playerId)
+	} else {
+		index = MatchFactory.addPlayer(playerId)
+	}
+
+	if (index === -1) return
+
+	dom.togglePlayerHighlight(playerId)
+	dom.updateMatchQueue()
+	dom.updatePlayersPairedCount()
+}
+
+function clickMatchQueue(e) {
+	if (e.target.tagName === 'BUTTON') return
+
+	const elementPlayer = e.target.closest('.match-player')
+	if (!elementPlayer) return
+	const playerId = elementPlayer.dataset.id
+	if (!playerId) return
+
+	let index = MatchFactory.removePlayer(playerId)
+
+	// if (index === -1) return
+
+	dom.togglePlayerHighlight(playerId)
+	dom.updateMatchQueue()
+	dom.updatePlayersPairedCount()
+}
+
 function clickMatch(e) {}
 
-function clickDeletePlayer(e) {}
-function clickDeleteMatch(e) {}
+function deletePlayer(e) {
+	if (e.target.tagName !== 'BUTTON') return
 
-export default {}
+	const elementPlayer = e.target.closest('.player')
+	if (!elementPlayer) return
+
+	const playerId = elementPlayer.dataset.id
+	db.deletePlayer(playerId)
+	elementPlayer.remove()
+}
+function deleteMatch(e) {
+	if (e.target.tagName !== 'BUTTON') return
+
+	const elementMatch = e.target.closest('.match')
+	if (!elementMatch) return
+
+	const matchId = +elementMatch.dataset.id
+	db.deleteMatch(matchId)
+	elementMatch.remove()
+	dom.reloadPlayerList()
+}
+
+export default {
+	addPlayer,
+	addMatch,
+	deletePlayer,
+	deleteMatch,
+	clickPlayer,
+	clickMatchQueue,
+}
