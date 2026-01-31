@@ -1,0 +1,100 @@
+#players {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.player .count-games {
+	flex-shrink: 0;
+}
+
+.player.highlight {
+	background-color: var(--color-secondary);
+}
+
+.player.highlight .count-games {
+	border-color: var(--color-secondary);
+}
+
+.player > div {
+	display: flex;
+}
+
+.player > div:nth-of-type(1) {
+	align-items: center;
+	justify-content: flex-start;
+	margin-right: 10px;
+	flex-shrink: 0;
+	min-width: 200px;
+	width: 50%;
+	height: 50px;
+	border-radius: 25px;
+	background-color: white;
+}
+
+.player .count-games {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 30px;
+	font-weight: bold;
+	width: 60px;
+	height: 60px;
+	border: 5px solid var(--color-main);
+	border-radius: 30px;
+	margin-right: 10px;
+	transition: border-color 0.25s ease-out;
+}
+
+.player .player-name {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.player > button,
+.add-player > button {
+	font-size: 30px;
+	border: none;
+	flex-shrink: 0;
+
+	margin-left: auto;
+}
+
+.player > button {
+	margin-right: 5px;
+	height: 50px;
+	width: 50px;
+	border-radius: 25px;
+	background-color: white;
+	color: var(--color-secondary);
+}
+
+.add-player {
+	display: flex;
+	align-items: center;
+	height: 60px;
+}
+
+.add-player > button {
+	color: white;
+	width: 60px;
+	height: 60px;
+	border-radius: 30px;
+	background-color: var(--color-secondary);
+}
+
+.add-player > input {
+	width: calc(100% - 60px - 5px);
+	height: 60px;
+	padding-right: 15px;
+	padding-left: 15px;
+	text-align: center;
+	border: 2px solid var(--color-secondary);
+	border-radius: 30px;
+	font-size: 16px;
+	transition: border 0.25s ease-in;
+}
+
+.add-player > input:focus {
+	border: 4px solid var(--color-secondary);
+	outline: none;
+}
