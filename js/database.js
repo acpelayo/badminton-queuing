@@ -16,13 +16,13 @@ function addPlayer(newPlayerId) {
 		.map((match) => match.id)
 
 	_dbPlayers.push(newPlayer)
-	_savePlayerDBtoLocalStorage()
+	savePlayerDBtoLocalStorage()
 
 	return newPlayer
 }
 function deletePlayer(playerID) {
 	_dbPlayers = _dbPlayers.filter((player) => player.id !== playerID)
-	_savePlayerDBtoLocalStorage()
+	savePlayerDBtoLocalStorage()
 }
 function getPlayer(playerID) {
 	return _dbPlayers.find((player) => player.id === playerID)
@@ -40,8 +40,8 @@ function addMatch(newMatch) {
 		}
 	})
 
-	_saveMatchDBToLocalStorage()
-	_savePlayerDBtoLocalStorage()
+	saveMatchDBToLocalStorage()
+	savePlayerDBtoLocalStorage()
 }
 function deleteMatch(matchId) {
 	_dbMatches = _dbMatches.filter((match) => match.id !== matchId)
@@ -49,8 +49,8 @@ function deleteMatch(matchId) {
 		player.matches = player.matches.filter((id) => id !== matchId)
 	})
 
-	_saveMatchDBToLocalStorage()
-	_savePlayerDBtoLocalStorage()
+	saveMatchDBToLocalStorage()
+	savePlayerDBtoLocalStorage()
 }
 function getMatch(matchID) {
 	return _dbMatches.find((match) => match.id === matchID)
@@ -60,10 +60,10 @@ function getMatchArray() {
 }
 
 // LOCALSTORAGE FUNCTIONS
-function _savePlayerDBtoLocalStorage() {
+function savePlayerDBtoLocalStorage() {
 	localStorage.setItem('dbPlayer', JSON.stringify(_dbPlayers))
 }
-function _saveMatchDBToLocalStorage() {
+function saveMatchDBToLocalStorage() {
 	localStorage.setItem('dbMatch', JSON.stringify(_dbMatches))
 }
 
@@ -95,6 +95,8 @@ export default {
 	deleteMatch,
 	getMatch,
 	getMatchArray,
+	savePlayerDBtoLocalStorage,
+	saveMatchDBToLocalStorage,
 	retrievePlayerDBFromLocalStorage,
 	retrieveMatchDBFromLocalStorage,
 }

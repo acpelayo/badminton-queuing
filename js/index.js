@@ -26,3 +26,4 @@ elementAddMatch.addEventListener('click', handler.clickMatchQueue)
 const elementMatchList = document.getElementById('match-list')
 
 elementMatchList.addEventListener('click', handler.deleteMatch)
+elementMatchList.addEventListener('click', handler.clickMatch)

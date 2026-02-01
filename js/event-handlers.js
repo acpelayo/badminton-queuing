@@ -80,7 +80,26 @@ function clickMatchQueue(e) {
 	dom.updatePlayersPairedCount()
 }
 
-function clickMatch(e) {}
+function clickMatch(e) {
+	if (e.target.tagName === 'BUTTON') return
+
+	const elementMatch = e.target.closest('.match')
+	if (!elementMatch) return
+	const matchId = +elementMatch.dataset.id
+	if (!matchId) return
+
+	const isDisabled = elementMatch.classList.contains('disabled')
+	const matchInstance = db.getMatch(matchId)
+
+	if (isDisabled) {
+		matchInstance.winner = null
+	} else {
+		matchInstance.winner = true
+	}
+
+	dom.toggleMatchDisabled(matchId)
+	db.saveMatchDBToLocalStorage()
+}
 
 function deletePlayer(e) {
 	if (e.target.tagName !== 'BUTTON') return
@@ -110,5 +129,6 @@ export default {
 	deletePlayer,
 	deleteMatch,
 	clickPlayer,
+	clickMatch,
 	clickMatchQueue,
 }

@@ -97,6 +97,27 @@ function togglePlayerHighlight(playerId) {
 	}
 }
 
+function toggleMatchDisabled(matchId) {
+	const elementMatchList = document.getElementById('match-list')
+	const elementMatches = elementMatchList.children
+
+	let elementMatch
+	for (let i = 0; i < elementMatches.length; i++) {
+		if (+elementMatches[i].dataset.id === matchId) {
+			elementMatch = elementMatches[i]
+			break
+		}
+	}
+
+	if (elementMatch.classList.contains('disabled')) {
+		elementMatch.classList.remove('disabled')
+		return -1
+	} else {
+		elementMatch.classList.add('disabled')
+		return 1
+	}
+}
+
 function updateMatchQueue() {
 	const elementPlayers = document.querySelectorAll('#add-match .match-player')
 	const currentPlayers = MatchFactory.currentPlayers
@@ -123,7 +144,7 @@ function updateMatchQueue() {
 }
 
 function clearHighlightedPlayers() {
-	const elementPlayerList = document.getElementById('player-list')
+	const elementMatchList = document.getElementById('player-list')
 	const elementPlayers = elementPlayerList.children
 	for (let i = 0; i < elementPlayers.length; i++) {
 		elementPlayers[i].classList.remove('highlight')
@@ -179,6 +200,7 @@ export default {
 	reloadPlayerList,
 	reloadMatchList,
 	togglePlayerHighlight,
+	toggleMatchDisabled,
 	updateMatchQueue,
 	updatePlayersPairedCount,
 	clearHighlightedPlayers,

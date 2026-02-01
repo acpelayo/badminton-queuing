@@ -127,7 +127,7 @@ export class Match {
 		const newMatch = document.createElement('div')
 		newMatch.dataset.id = this.id
 		newMatch.classList.add('match', 'pill')
-
+		if (this.winner) newMatch.classList.add('disabled')
 		newMatch.appendChild(divTeam1)
 		newMatch.appendChild(span)
 		newMatch.appendChild(divTeam2)

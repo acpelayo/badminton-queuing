@@ -1,6 +1,4 @@
 #matches {
-	padding-top: 15px;
-	border-top: 1px solid gray;
 	display: flex;
 	flex-direction: column;
 }
@@ -46,6 +44,31 @@
 	font-size: 16px;
 }
 
+.match > span,
+.match > button,
+.match > .team {
+	transition:
+		background-color 0.25s ease-out,
+		color 0.25s ease-out;
+}
+
+.match.disabled {
+	background-color: var(--color-gray);
+}
+
+.match.disabled .team {
+	background-color: var(--color-white);
+}
+
+.match.disabled button {
+	color: var(--color-gray);
+	background-color: var(--color-white);
+}
+
+.match.disabled > span {
+	color: var(--color-white);
+}
+
 .match-player {
 	font-size: 16px;
 	height: 25px;
@@ -61,7 +84,7 @@
 	bottom: 5px;
 	z-index: 1000;
 	box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35);
-	margin-bottom: 20px;
+	/* margin-bottom: 20px; */
 }
 
 .add-match .match-player {
