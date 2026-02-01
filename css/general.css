@@ -20,6 +20,16 @@ input {
 html,
 body {
 	touch-action: manipulation;
+	/* 1. Hide scrollbar for Chrome, Safari, and newer Edge */
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* 2. Hide scrollbar for Firefox */
+	scrollbar-width: none;
+
+	/* 3. Hide scrollbar for older IE and Edge */
+	-ms-overflow-style: none;
 }
 
 * {
@@ -52,6 +62,7 @@ button {
 h2 {
 	text-align: center;
 	margin-bottom: 10px;
+	font-size: 30px;
 }
 
 .hidden {
@@ -67,4 +78,8 @@ h2 {
 	background-color: var(--color-main);
 	border-radius: 30px;
 	transition: background-color 0.25s ease-out;
+}
+
+.bold {
+	font-weight: bold;
 }

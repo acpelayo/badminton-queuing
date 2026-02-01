@@ -10,12 +10,9 @@ function addPlayer(newPlayerId) {
 
 	const newPlayer = new Player(newPlayerId)
 
-	// count matches played by the player in case the player existed previously and was deleted
-	newPlayer.matches = _dbMatches //prettier ignore
-		.filter((match) => match.includesPlayer(newPlayerId))
-		.map((match) => match.id)
-
 	_dbPlayers.push(newPlayer)
+
+	_updatePlayersMatchInfo()
 	savePlayerDBtoLocalStorage()
 
 	return newPlayer
@@ -34,21 +31,15 @@ function getPlayerArray() {
 // MATCH FUNCTIONS
 function addMatch(newMatch) {
 	_dbMatches.push(newMatch)
-	_dbPlayers.forEach((player) => {
-		if (newMatch.includesPlayer(player.id)) {
-			player.addMatch(newMatch.id)
-		}
-	})
 
+	_updatePlayersMatchInfo()
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
 function deleteMatch(matchId) {
 	_dbMatches = _dbMatches.filter((match) => match.id !== matchId)
-	_dbPlayers.forEach((player) => {
-		player.matches = player.matches.filter((id) => id !== matchId)
-	})
 
+	_updatePlayersMatchInfo()
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
@@ -74,6 +65,34 @@ function retrievePlayerDBFromLocalStorage() {
 function retrieveMatchDBFromLocalStorage() {
 	const matchInfo = JSON.parse(localStorage.getItem('dbMatch')) || []
 	_dbMatches = matchInfo.map((matchJSON) => Match.fromJSON(matchJSON))
+}
+
+// UTILITIES
+function _updatePlayersMatchInfo() {
+	_dbPlayers.forEach((player) => {
+		// update player match list
+		player.matches = _dbMatches //
+			.filter((match) => match.includesPlayer(player.id))
+			.map((match) => match.id)
+
+		let lastConsecutiveMatchesCount = 0
+		let matchesSinceLastMatch = -1
+		for (let i = 0; i < _dbMatches.length; i++) {
+			const match = _dbMatches[_dbMatches.length - 1 - i]
+
+			// update players' lastConsecutiveMatchCount and matchesSinceLastMatch
+			if (match.includesPlayer(player.id)) {
+				lastConsecutiveMatchesCount++
+				if (matchesSinceLastMatch === -1) {
+					matchesSinceLastMatch = i
+				}
+			} else if (lastConsecutiveMatchesCount !== 0) {
+				break
+			}
+		}
+		player.lastConsecutiveMatchesCount = lastConsecutiveMatchesCount
+		player.matchesSinceLastMatch = matchesSinceLastMatch
+	})
 }
 
 function deleteOldDb() {

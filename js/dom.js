@@ -52,8 +52,17 @@ function reloadPlayerList() {
 		.getPlayerArray()
 		.filter((player) => player !== null)
 		.sort((p1, p2) => {
-			const result = p1.matchCount - p2.matchCount
-			if (result !== 0) return result
+			// sort by match count
+			const criteria1 = p1.matchCount - p2.matchCount
+			if (criteria1 !== 0) return criteria1
+
+			// sort by matches since last match
+			const criteria2 = p2.matchesSinceLastMatch - p1.matchesSinceLastMatch
+			if (criteria2 !== 0) return criteria2
+
+			// sort by last number of consecutive matches
+			const criteria3 = p1.lastConsecutiveMatchesCount - p2.lastConsecutiveMatchesCount
+			if (criteria3 !== 0) return criteria3
 
 			return p1.id.localeCompare(p2.id)
 		})
@@ -62,6 +71,14 @@ function reloadPlayerList() {
 		if (player === null) return
 		elementPlayerList.appendChild(player.createPlayerElement())
 	})
+
+	// restore player highlight status
+	for (let i = 0; i < elementPlayers.length; i++) {
+		const playerId = elementPlayers[i].dataset.id
+		if (MatchFactory.includesPlayer(playerId)) {
+			elementPlayers[i].classList.add('highlight')
+		}
+	}
 }
 
 function reloadMatchList() {

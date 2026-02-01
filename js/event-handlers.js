@@ -19,6 +19,7 @@ function addPlayer(e) {
 	if (newPlayerInstance === null) return
 
 	dom.addPlayer(newPlayerInstance)
+	dom.reloadPlayerList()
 
 	textIinputPlayerName.value = ''
 	textIinputPlayerName.focus()
@@ -56,6 +57,7 @@ function clickPlayer(e) {
 		index = MatchFactory.addPlayer(playerId)
 	}
 
+	// -1 is returned if player was not added/removed
 	if (index === -1) return
 
 	dom.togglePlayerHighlight(playerId)
@@ -108,7 +110,12 @@ function deletePlayer(e) {
 	if (!elementPlayer) return
 
 	const playerId = elementPlayer.dataset.id
+
+	if (MatchFactory.includesPlayer(playerId)) MatchFactory.removePlayer(playerId)
 	db.deletePlayer(playerId)
+
+	dom.updateMatchQueue()
+	dom.updatePlayersPairedCount()
 	elementPlayer.remove()
 }
 function deleteMatch(e) {

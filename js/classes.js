@@ -2,6 +2,8 @@ export class Player {
 	constructor(playerName) {
 		this.id = playerName
 		this.matches = []
+		this.lastConsecutiveMatchesCount = 0
+		this.matchesSinceLastMatch = -1
 	}
 
 	get matchCount() {
@@ -19,11 +21,13 @@ export class Player {
 	createPlayerElement() {
 		const spanGameCount = document.createElement('span')
 		const spanPlayerName = document.createElement('span')
+		const spanPreviousMatches = document.createElement('span')
 		const spanPairCount = document.createElement('span')
 		// const spanAgainstCount = document.createElement('span')
 
 		spanGameCount.classList.add('count-games')
 		spanPlayerName.classList.add('player-name')
+		spanPreviousMatches.classList.add('previous-matches')
 
 		spanPairCount.classList.add('count-pair')
 		// spanPairCount.classList.add('hidden')
@@ -33,6 +37,17 @@ export class Player {
 		spanGameCount.textContent = this.matchCount
 		spanPlayerName.textContent = this.id
 
+		if (this.matchesSinceLastMatch === 0) {
+			if (this.lastConsecutiveMatchesCount === 1) {
+				spanPreviousMatches.textContent = 'Played last game'
+			} else if (this.lastConsecutiveMatchesCount > 1) {
+				spanPreviousMatches.textContent = `Played last ${this.lastConsecutiveMatchesCount} games`
+
+				if (this.lastConsecutiveMatchesCount > 1) spanPreviousMatches.classList.add('bold')
+				if (this.lastConsecutiveMatchesCount > 2) spanPreviousMatches.classList.add('highlight')
+			}
+		}
+
 		spanPairCount.textContent = ''
 		// spanAgainstCount.textContent = ''
 
@@ -41,6 +56,7 @@ export class Player {
 
 		div1.appendChild(spanGameCount)
 		div1.appendChild(spanPlayerName)
+		div1.appendChild(spanPreviousMatches)
 		div2.appendChild(spanPairCount)
 		// div2.appendChild(spanAgainstCount)
 
@@ -57,10 +73,12 @@ export class Player {
 		return divNewPlayer
 	}
 
-	static fromJSON({ id, matches }) {
+	static fromJSON({ id, matches, lastConsecutiveMatchesCount, matchesSinceLastMatch }) {
 		const newPlayer = new Player()
 		newPlayer.id = id
 		newPlayer.matches = matches
+		newPlayer.lastConsecutiveMatchesCount = lastConsecutiveMatchesCount
+		newPlayer.matchesSinceLastMatch = matchesSinceLastMatch
 
 		return newPlayer
 	}
