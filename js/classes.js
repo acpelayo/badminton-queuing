@@ -1,8 +1,13 @@
 export class Player {
 	#id
-	#matches
-	#lastConsecutiveMatchesCount
-	#matchesSinceLastMatch
+	#matches = []
+	#lastConsecutiveMatchesCount = 0
+	#matchesSinceLastMatch = -1
+	#dom = {
+		spanGameCount: null,
+		spanPreviousMatches: null,
+		spanPairCount: null,
+	}
 
 	constructor(playerData) {
 		if (typeof playerData === 'object') {
@@ -12,11 +17,7 @@ export class Player {
 			this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch
 			return
 		}
-
 		this.#id = playerData
-		this.#matches = []
-		this.#lastConsecutiveMatchesCount = 0
-		this.#matchesSinceLastMatch = -1
 	}
 
 	get matchCount() {
@@ -36,11 +37,19 @@ export class Player {
 	}
 
 	addMatch(matchId) {
-		this.matches.push(matchId)
+		this.#matches.push(matchId)
+
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
 	}
 
 	deleteMatch(matchId) {
-		this.matches = this.matches.filter((id) => id === matchId)
+		this.#matches = this.#matches.filter((id) => id === matchId)
+
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
 	}
 
 	createPlayerElement() {
@@ -95,6 +104,11 @@ export class Player {
 		divNewPlayer.appendChild(btn)
 		divNewPlayer.classList.add('player', 'pill')
 		divNewPlayer.dataset.id = this.id
+
+		this.#dom.spanGameCount = spanGameCount
+		this.#dom.spanPreviousMatches = spanPreviousMatches
+		this.#dom.spanPairCount = spanPairCount
+
 		return divNewPlayer
 	}
 

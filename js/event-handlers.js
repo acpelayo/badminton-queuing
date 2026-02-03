@@ -19,7 +19,7 @@ function addPlayer(e) {
 	if (newPlayerInstance === null) return
 
 	dom.addPlayer(newPlayerInstance)
-	dom.reloadPlayerList()
+	// dom.reloadPlayerList()
 
 	textIinputPlayerName.value = ''
 	textIinputPlayerName.focus()
