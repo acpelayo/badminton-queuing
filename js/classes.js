@@ -1,13 +1,38 @@
 export class Player {
-	constructor(playerName) {
-		this.id = playerName
-		this.matches = []
-		this.lastConsecutiveMatchesCount = 0
-		this.matchesSinceLastMatch = -1
+	#id
+	#matches
+	#lastConsecutiveMatchesCount
+	#matchesSinceLastMatch
+
+	constructor(playerData) {
+		if (typeof playerData === 'object') {
+			this.#id = playerData.id
+			this.#matches = playerData.matches
+			this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount
+			this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch
+			return
+		}
+
+		this.#id = playerData
+		this.#matches = []
+		this.#lastConsecutiveMatchesCount = 0
+		this.#matchesSinceLastMatch = -1
 	}
 
 	get matchCount() {
 		return this.matches.length
+	}
+	get id() {
+		return this.#id
+	}
+	get matches() {
+		return this.#matches
+	}
+	get lastConsecutiveMatchesCount() {
+		return this.#lastConsecutiveMatchesCount
+	}
+	get matchesSinceLastMatch() {
+		return this.#matchesSinceLastMatch
 	}
 
 	addMatch(matchId) {
@@ -73,14 +98,17 @@ export class Player {
 		return divNewPlayer
 	}
 
-	static fromJSON({ id, matches, lastConsecutiveMatchesCount, matchesSinceLastMatch }) {
-		const newPlayer = new Player()
-		newPlayer.id = id
-		newPlayer.matches = matches
-		newPlayer.lastConsecutiveMatchesCount = lastConsecutiveMatchesCount
-		newPlayer.matchesSinceLastMatch = matchesSinceLastMatch
+	toJSON() {
+		return {
+			id: this.#id,
+			matches: this.#matches,
+			lastConsecutiveMatchesCount: this.#lastConsecutiveMatchesCount,
+			matchesSinceLastMatch: this.#matchesSinceLastMatch,
+		}
+	}
 
-		return newPlayer
+	static fromJSON(playerJSON) {
+		return new Player(playerJSON)
 	}
 }
 
