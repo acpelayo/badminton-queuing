@@ -31,14 +31,18 @@ function getPlayerArray() {
 // MATCH FUNCTIONS
 function addMatch(newMatch) {
 	_dbMatches.push(newMatch)
-
+	_dbPlayers.forEach((player) => {
+		if (!newMatch.includesPlayer(player.id)) return
+		player.addMatch(newMatch.id)
+	})
 	_updatePlayersMatchInfo()
+
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
 function deleteMatch(matchId) {
 	_dbMatches = _dbMatches.filter((match) => match.id !== matchId)
-
+	_dbPlayers.forEach((player) => player.deleteMatch(newMatch.id))
 	_updatePlayersMatchInfo()
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
@@ -70,11 +74,6 @@ function retrieveMatchDBFromLocalStorage() {
 // UTILITIES
 function _updatePlayersMatchInfo() {
 	_dbPlayers.forEach((player) => {
-		// update player match list
-		player.matches = _dbMatches //
-			.filter((match) => match.includesPlayer(player.id))
-			.map((match) => match.id)
-
 		let lastConsecutiveMatchesCount = 0
 		let matchesSinceLastMatch = -1
 		for (let i = 0; i < _dbMatches.length; i++) {

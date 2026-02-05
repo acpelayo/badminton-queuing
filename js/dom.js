@@ -68,7 +68,6 @@ function reloadPlayerList() {
 		})
 
 	sortedPlayers.forEach((player) => {
-		if (player === null) return
 		elementPlayerList.appendChild(player.createPlayerElement())
 	})
 

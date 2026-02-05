@@ -20,7 +20,7 @@
 @keyframes fade-from-above {
 	0% {
 		opacity: 0;
-		transform: translateY(-65px) scale(1.2);
+		transform: translateY(-70px) scale(1.2);
 		box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5);
 		z-index: 1000;
 	}
@@ -37,7 +37,7 @@
 }
 @keyframes move-down {
 	0% {
-		transform: translateY(-65px);
+		transform: translateY(-70px);
 	}
 
 	100% {

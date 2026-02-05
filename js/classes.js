@@ -1,8 +1,8 @@
 export class Player {
 	#id
 	#matches = []
-	#lastConsecutiveMatchesCount = 0
-	#matchesSinceLastMatch = -1
+	#lastConsecutiveMatchesCount
+	#matchesSinceLastMatch
 	#dom = {
 		spanGameCount: null,
 		spanPreviousMatches: null,
@@ -36,8 +36,34 @@ export class Player {
 		return this.#matchesSinceLastMatch
 	}
 
-	addMatch(matchId) {
-		this.#matches.push(matchId)
+	set lastConsecutiveMatchesCount(newCount) {
+		this.#lastConsecutiveMatchesCount = newCount
+
+		const span = this.#dom.spanPreviousMatches || null
+		if (!span) return
+
+		span.classList.remove('bold', 'highlight')
+		if (this.matchesSinceLastMatch > 0) {
+			span.textContent = ''
+			return
+		}
+
+		if (newCount === 1) {
+			span.textContent = 'Played last game'
+		} else if (this.lastConsecutiveMatchesCount > 1) {
+			span.textContent = `Played last ${this.lastConsecutiveMatchesCount} games`
+
+			if (this.lastConsecutiveMatchesCount > 1) span.classList.add('bold')
+			if (this.lastConsecutiveMatchesCount > 2) span.classList.add('highlight')
+		}
+	}
+
+	set matchesSinceLastMatch(newCount) {
+		this.#matchesSinceLastMatch = newCount
+	}
+
+	addMatch(...matchId) {
+		this.#matches = [...this.#matches, ...matchId]
 
 		if (this.#dom.spanGameCount !== null) {
 			this.#dom.spanGameCount.textContent = this.#matches.length
@@ -45,7 +71,7 @@ export class Player {
 	}
 
 	deleteMatch(matchId) {
-		this.#matches = this.#matches.filter((id) => id === matchId)
+		this.matches = this.matches.filter((id) => id === matchId)
 
 		if (this.#dom.spanGameCount !== null) {
 			this.#dom.spanGameCount.textContent = this.#matches.length
@@ -192,6 +218,8 @@ export class Match {
 		newMatch.appendChild(span)
 		newMatch.appendChild(divTeam2)
 		newMatch.appendChild(btn)
+
+		newMatch.draggable = true
 
 		return newMatch
 	}

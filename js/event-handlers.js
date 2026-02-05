@@ -19,7 +19,7 @@ function addPlayer(e) {
 	if (newPlayerInstance === null) return
 
 	dom.addPlayer(newPlayerInstance)
-	// dom.reloadPlayerList()
+	dom.reloadPlayerList()
 
 	textIinputPlayerName.value = ''
 	textIinputPlayerName.focus()
@@ -33,7 +33,7 @@ function addMatch(e) {
 	db.addMatch(newMatch)
 
 	dom.updateMatchQueue()
-	dom.reloadPlayerList()
+	// dom.reloadPlayerList()
 	dom.addMatch(newMatch)
 	// dom.clearHighlightedPlayers()
 
