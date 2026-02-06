@@ -5,7 +5,7 @@ import handler from './event-handlers.js'
 db.retrievePlayerDBFromLocalStorage()
 db.retrieveMatchDBFromLocalStorage()
 
-dom.reloadPlayerList()
+dom.loadPlayerList()
 dom.reloadMatchList()
 
 const textInputAddPlayer = document.getElementById('player-name')

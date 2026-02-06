@@ -40,7 +40,7 @@ function addMatch(newMatch) {
 	}, 500)
 }
 
-function reloadPlayerList() {
+function loadPlayerList() {
 	const elementPlayerList = document.getElementById('player-list')
 	const elementPlayers = elementPlayerList.children
 
@@ -48,36 +48,9 @@ function reloadPlayerList() {
 		elementPlayers[0].remove()
 	}
 
-	const sortedPlayers = db
-		.getPlayerArray()
-		.filter((player) => player !== null)
-		.sort((p1, p2) => {
-			// sort by match count
-			const criteria1 = p1.matchCount - p2.matchCount
-			if (criteria1 !== 0) return criteria1
-
-			// sort by matches since last match
-			const criteria2 = p2.matchesSinceLastMatch - p1.matchesSinceLastMatch
-			if (criteria2 !== 0) return criteria2
-
-			// sort by last number of consecutive matches
-			const criteria3 = p1.lastConsecutiveMatchesCount - p2.lastConsecutiveMatchesCount
-			if (criteria3 !== 0) return criteria3
-
-			return p1.id.localeCompare(p2.id)
-		})
-
-	sortedPlayers.forEach((player) => {
+	db.getPlayerArray().forEach((player) => {
 		elementPlayerList.appendChild(player.createPlayerElement())
 	})
-
-	// restore player highlight status
-	for (let i = 0; i < elementPlayers.length; i++) {
-		const playerId = elementPlayers[i].dataset.id
-		if (MatchFactory.includesPlayer(playerId)) {
-			elementPlayers[i].classList.add('highlight')
-		}
-	}
 }
 
 function reloadMatchList() {
@@ -110,6 +83,14 @@ function togglePlayerHighlight(playerId) {
 	} else {
 		elementPlayer.classList.add('highlight')
 		return 1
+	}
+}
+
+function clearPlayerHighlight() {
+	const elementPlayerList = document.getElementById('player-list')
+	const elementPlayers = elementPlayerList.children
+	for (let i = 0; i < elementPlayers.length; i++) {
+		elementPlayers[i].classList.remove('highlight')
 	}
 }
 
@@ -159,14 +140,6 @@ function updateMatchQueue() {
 	}
 }
 
-function clearHighlightedPlayers() {
-	const elementMatchList = document.getElementById('player-list')
-	const elementPlayers = elementPlayerList.children
-	for (let i = 0; i < elementPlayers.length; i++) {
-		elementPlayers[i].classList.remove('highlight')
-	}
-}
-
 function updatePlayersPairedCount() {
 	const elementPlayers = document.getElementById('player-list').children
 
@@ -194,6 +167,15 @@ function updatePlayersPairedCount() {
 	}
 }
 
+function sortPlayerList() {
+	const players = db.getPlayerArray()
+	for (let i = 1; i < players.length; i++) {
+		const firstElement = players[i - 1].divPlayer
+		const secondElement = players[i].divPlayer
+		firstElement.after(secondElement)
+	}
+}
+
 // ------------------------------- //
 // UTILITY FUNCTIONS
 // ------------------------------- //
@@ -213,11 +195,12 @@ function _countMatchesPaired(playerId1, playerId2) {
 export default {
 	addPlayer,
 	addMatch,
-	reloadPlayerList,
+	loadPlayerList,
 	reloadMatchList,
 	togglePlayerHighlight,
+	clearPlayerHighlight,
 	toggleMatchDisabled,
 	updateMatchQueue,
 	updatePlayersPairedCount,
-	clearHighlightedPlayers,
+	sortPlayerList,
 }

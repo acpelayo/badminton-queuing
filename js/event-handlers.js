@@ -19,7 +19,7 @@ function addPlayer(e) {
 	if (newPlayerInstance === null) return
 
 	dom.addPlayer(newPlayerInstance)
-	dom.reloadPlayerList()
+	dom.sortPlayerList()
 
 	textIinputPlayerName.value = ''
 	textIinputPlayerName.focus()
@@ -33,9 +33,9 @@ function addMatch(e) {
 	db.addMatch(newMatch)
 
 	dom.updateMatchQueue()
-	// dom.reloadPlayerList()
 	dom.addMatch(newMatch)
-	// dom.clearHighlightedPlayers()
+	dom.sortPlayerList()
+	dom.clearPlayerHighlight()
 
 	return
 }
@@ -127,7 +127,8 @@ function deleteMatch(e) {
 	const matchId = +elementMatch.dataset.id
 	db.deleteMatch(matchId)
 	elementMatch.remove()
-	dom.reloadPlayerList()
+
+	dom.sortPlayerList()
 }
 
 export default {
