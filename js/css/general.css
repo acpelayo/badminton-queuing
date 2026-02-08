@@ -1,0 +1,102 @@
+button {
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+	flex-shrink: 0;
+	transition: transform 0.1s ease-out;
+}
+
+button:active {
+	transform: scale(0.9);
+}
+
+@media (hover: hover) {
+	button:hover {
+		transform: scale(0.9);
+	}
+}
+
+html,
+body {
+	touch-action: manipulation;
+	/* 1. Hide scrollbar for Chrome, Safari, and newer Edge */
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* 2. Hide scrollbar for Firefox */
+	scrollbar-width: none;
+
+	/* 3. Hide scrollbar for older IE and Edge */
+	-ms-overflow-style: none;
+}
+
+* {
+	margin: 0;
+	box-sizing: border-box;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+span,
+div {
+	font-size: 12px;
+}
+
+main {
+	max-width: 430px;
+	width: 100%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+}
+
+button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: black;
+}
+
+h2 {
+	text-align: left;
+	margin-bottom: 10px;
+	font-size: 30px;
+	padding-left: 20px;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.pill {
+	position: relative;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	height: 60px;
+	margin-bottom: 10px;
+	background-color: var(--color-main);
+	border-radius: 30px;
+	transition:
+		background-color 0.25s ease-out,
+		transform 0.1s ease-out;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
+	user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.pill:active:not(:has(button:active)) {
+	transform: scale(0.95);
+}
+
+/* @media (hover: hover) {
+	.pill:hover:not(:has(button:hover)) {
+		transform: scale(0.95);
+	}
+} */
+
+.bold {
+	font-weight: bold;
+}

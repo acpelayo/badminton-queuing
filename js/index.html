@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+		<title>Badminton Queuing</title>
+
+		<link rel="stylesheet" href="css/index.css" />
+	</head>
+	<body ontouchstart="">
+		<label id="haptic" style="display: none"><input type="checkbox" switch /></label>
+
+		<main>
+			<div id="players">
+				<h2>Players</h2>
+				<div id="player-list">
+					<!-- <div class="player pill" data-id="Chai">
+						<div>
+							<span class="count-games">1</span>
+							<span class="player-name">Chai</span>
+						</div>
+						<div>
+							<span class="count-pair"></span>
+						</div>
+						<button>×</button>
+					</div> -->
+				</div>
+				<div id="add-player" class="add-player">
+					<input type="text" id="player-name" placeholder="Enter player name" maxlength="10" autocomplete="off" />
+					<button>+</button>
+				</div>
+			</div>
+			<h2>Matches</h2>
+			<div id="add-match" class="add-match pill">
+				<div class="team">
+					<span class="match-player">-</span>
+					<span class="match-player">-</span>
+				</div>
+				<span>vs</span>
+				<div class="team">
+					<span class="match-player">-</span>
+					<span class="match-player">-</span>
+				</div>
+				<button>+</button>
+			</div>
+			<div id="matches">
+				<div id="match-list" class="match-list">
+					<!-- <div data-id="1769878595977" class="match pill">
+						<div class="team">
+							<span class="match-player">AAAAAAAAAA</span>
+							<span class="match-player">Chai</span>
+						</div>
+						<span>vs</span>
+						<div class="team">
+							<span class="match-player">Krizie</span>
+							<span class="match-player">Casi</span>
+						</div>
+						<button>×</button>
+					</div> -->
+				</div>
+			</div>
+		</main>
+
+		<script type="module" src="js/index.js"></script>
+	</body>
+</html>
