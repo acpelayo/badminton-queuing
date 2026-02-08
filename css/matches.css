@@ -3,10 +3,6 @@
 	flex-direction: column;
 }
 
-.match-list:has(.match.is-dragging) {
-	/* touch-action: none; */
-}
-
 .match,
 .add-match {
 	padding-left: 5px;
@@ -14,7 +10,7 @@
 }
 
 .match {
-	transition: translate 0.1s ease-out;
+	/* transition: translate 0.1s ease-out; */
 }
 
 .team {
@@ -79,7 +75,10 @@
 
 .match.is-dragging {
 	transform: scale(1.05) !important;
-	transition: translate 0s;
+	transition:
+		background-color 0.25s ease-out,
+		transform 0.1s ease-out,
+		translate 0s ease-out;
 	z-index: 1000;
 }
 
