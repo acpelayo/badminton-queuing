@@ -137,14 +137,19 @@ function deleteMatch(e) {
 	dom.haptic()
 }
 
+let fromIndex
+let toIndex
 function matchPointerDown(e) {
 	if (e.target.tagName === 'BUTTON') return
 
 	const elementMatch = e.target.closest('.match')
 	if (!elementMatch) return
 
-	const matchId = elementMatch.dataset.id
+	const matchId = +elementMatch.dataset.id
 	const matchInstance = db.getMatch(matchId)
+
+	fromIndex = db.getMatchArray().findIndex((match) => match.id === matchId)
+	toIndex = fromIndex
 
 	elementMatch.setPointerCapture(e.pointerId)
 
@@ -174,7 +179,7 @@ function matchPointerDown(e) {
 		})
 
 		if (isDragging) {
-			db.moveMatch(startIndex, destinationIndex)
+			db.moveMatch(fromIndex, toIndex)
 			Array.from(document.getElementById('match-list').children).forEach((child) => {
 				child.remove()
 			})
@@ -191,9 +196,6 @@ function matchPointerDown(e) {
 	elementMatch.addEventListener('pointercancel', _reset, { once: true })
 }
 
-let startIndex
-let destinationIndex
-
 function _matchPointerMove(e) {
 	const elementMatch = e.target
 	const offset = Math.round(e.clientY - dragStartY)
@@ -205,8 +207,6 @@ function _matchPointerMove(e) {
 	const moveMatchYCenter = moveMatchRect.bottom - moveMatchRect.height / 2
 	const moveMatchIndex = elementMatches.findIndex((match) => match.dataset.id === elementMatch.dataset.id)
 
-	startIndex = moveMatchIndex
-	destinationIndex = -1
 	const yDiffArr = elementMatches.map((match, i) => {
 		if (i === moveMatchIndex) return null
 
@@ -228,9 +228,9 @@ function _matchPointerMove(e) {
 		return yDiff
 	})
 
-	destinationIndex = yDiffArr.findIndex((yDiff) => yDiff > 0)
-
-	destinationIndex = destinationIndex === -1 ? elementMatches.length - 1 : destinationIndex
+	toIndex = yDiffArr.findIndex((yDiff) => yDiff > 0)
+	if (toIndex > fromIndex) toIndex = toIndex - 1
+	toIndex = toIndex === -1 ? elementMatches.length - 1 : toIndex
 }
 
 export default {
