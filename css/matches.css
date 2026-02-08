@@ -3,10 +3,18 @@
 	flex-direction: column;
 }
 
+.match-list:has(.match.is-dragging) {
+	/* touch-action: none; */
+}
+
 .match,
 .add-match {
 	padding-left: 5px;
 	padding-right: 5px;
+}
+
+.match {
+	transition: translate 0.1s ease-out;
 }
 
 .team {
@@ -48,8 +56,8 @@
 .match > button,
 .match > .team {
 	transition:
-		background-color 0.25s ease-out,
-		color 0.25s ease-out;
+		background-color 0.1s ease-out,
+		color 0.1s ease-out;
 }
 
 .match.disabled {
@@ -69,6 +77,12 @@
 	color: var(--color-white);
 }
 
+.match.is-dragging {
+	transform: scale(1.05) !important;
+	transition: translate 0s;
+	z-index: 1000;
+}
+
 .match-player {
 	font-size: 16px;
 	height: 25px;
@@ -83,7 +97,14 @@
 	position: sticky;
 	bottom: 5px;
 	z-index: 1000;
-	/* box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.35); */
+}
+
+.add-match.highlight {
+	background-color: var(--color-green);
+}
+
+.add-match.highlight button {
+	color: var(--color-green);
 }
 
 .add-match .match-player {

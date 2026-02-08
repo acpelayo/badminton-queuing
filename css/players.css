@@ -43,7 +43,7 @@
 	margin-right: 10px;
 	margin-top: -5px;
 	margin-bottom: -5px;
-	transition: border-color 0.25s ease-out;
+	transition: border-color 0.1s ease-out;
 	box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -117,7 +117,7 @@
 	border: 2px solid var(--color-secondary);
 	border-radius: 30px;
 	font-size: 16px;
-	transition: border 0.25s ease-in;
+	transition: border 0.1s ease-in;
 }
 
 .add-player > input:focus {

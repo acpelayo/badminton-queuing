@@ -6,7 +6,8 @@ db.retrievePlayerDBFromLocalStorage()
 db.retrieveMatchDBFromLocalStorage()
 
 dom.loadPlayerList()
-dom.reloadMatchList()
+dom.loadMatchList()
+dom.updateMatchQueue()
 
 const textInputAddPlayer = document.getElementById('player-name')
 const btnAddPlayer = document.querySelector('#add-player > button')
@@ -27,3 +28,4 @@ const elementMatchList = document.getElementById('match-list')
 
 elementMatchList.addEventListener('click', handler.deleteMatch)
 elementMatchList.addEventListener('click', handler.clickMatch)
+elementMatchList.addEventListener('pointerdown', handler.matchPointerDown)

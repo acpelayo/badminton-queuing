@@ -1,4 +1,5 @@
-import { Player, Match } from './classes.js'
+import { Player } from './classes/Player.js'
+import { Match, MatchFactory } from './classes/Match.js'
 
 let _dbPlayers = []
 let _dbMatches = []
@@ -10,16 +11,25 @@ function addPlayer(newPlayerId) {
 
 	const newPlayer = new Player(newPlayerId)
 
+	// check if player has played in existing matches
+	_dbMatches.forEach((match) => {
+		if (match.includesPlayer(newPlayerId)) {
+			newPlayer.addMatch(match.id)
+		}
+	})
+
 	_dbPlayers.push(newPlayer)
 
 	_updatePlayersMatchInfo()
 	_sortPlayers()
+
 	savePlayerDBtoLocalStorage()
 
 	return newPlayer
 }
 function deletePlayer(playerID) {
 	_dbPlayers = _dbPlayers.filter((player) => player.id !== playerID)
+
 	savePlayerDBtoLocalStorage()
 }
 function getPlayer(playerID) {
@@ -35,6 +45,7 @@ function addMatch(newMatch) {
 	_dbPlayers.forEach((player) => {
 		if (!newMatch.includesPlayer(player.id)) return
 		player.addMatch(newMatch.id)
+		player.queueIndex = -1
 	})
 
 	_updatePlayersMatchInfo()
@@ -53,6 +64,17 @@ function deleteMatch(matchId) {
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
+function moveMatch(fromIndex, toIndex) {
+	const [match] = _dbMatches.splice(fromIndex, 1)
+	_dbMatches.splice(toIndex, 0, match)
+
+	_updatePlayersMatchInfo()
+	_sortPlayers()
+
+	saveMatchDBToLocalStorage()
+	savePlayerDBtoLocalStorage()
+}
+
 function getMatch(matchID) {
 	return _dbMatches.find((match) => match.id === matchID)
 }
@@ -135,6 +157,7 @@ export default {
 	getPlayerArray,
 	addMatch,
 	deleteMatch,
+	moveMatch,
 	getMatch,
 	getMatchArray,
 	savePlayerDBtoLocalStorage,
