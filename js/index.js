@@ -5,8 +5,9 @@ import handler from './event-handlers.js'
 db.retrievePlayerDBFromLocalStorage()
 db.retrieveMatchDBFromLocalStorage()
 
-dom.reloadPlayerList()
-dom.reloadMatchList()
+dom.loadPlayerList()
+dom.loadMatchList()
+dom.updateMatchQueue()
 
 const textInputAddPlayer = document.getElementById('player-name')
 const btnAddPlayer = document.querySelector('#add-player > button')
@@ -27,3 +28,4 @@ const elementMatchList = document.getElementById('match-list')
 
 elementMatchList.addEventListener('click', handler.deleteMatch)
 elementMatchList.addEventListener('click', handler.clickMatch)
+elementMatchList.addEventListener('pointerdown', handler.matchPointerDown)

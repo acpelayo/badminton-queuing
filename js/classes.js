@@ -1,21 +1,83 @@
 export class Player {
-	constructor(playerName) {
-		this.id = playerName
-		this.matches = []
-		this.lastConsecutiveMatchesCount = 0
-		this.matchesSinceLastMatch = -1
+	#id
+	#matches = []
+	#lastConsecutiveMatchesCount
+	#matchesSinceLastMatch
+	#dom = {
+		divPlayer: null,
+		spanGameCount: null,
+		spanPreviousMatches: null,
+		spanPairCount: null,
+	}
+
+	constructor(playerData) {
+		if (typeof playerData === 'object') {
+			this.#id = playerData.id
+			this.#matches = playerData.matches
+			this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount
+			this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch
+			return
+		}
+		this.#id = playerData
 	}
 
 	get matchCount() {
 		return this.matches.length
 	}
+	get id() {
+		return this.#id
+	}
+	get matches() {
+		return this.#matches
+	}
+	get lastConsecutiveMatchesCount() {
+		return this.#lastConsecutiveMatchesCount
+	}
+	get matchesSinceLastMatch() {
+		return this.#matchesSinceLastMatch
+	}
+	get divPlayer() {
+		return this.#dom.divPlayer
+	}
 
-	addMatch(matchId) {
-		this.matches.push(matchId)
+	set lastConsecutiveMatchesCount(newCount) {
+		this.#lastConsecutiveMatchesCount = newCount
+	}
+
+	set matchesSinceLastMatch(newCount) {
+		this.#matchesSinceLastMatch = newCount
+
+		const span = this.#dom.spanPreviousMatches || null
+		if (!span) return
+
+		span.classList.remove('bold', 'highlight')
+		span.textContent = ''
+		if (newCount > 0) return
+
+		if (this.lastConsecutiveMatchesCount === 1) {
+			span.textContent = 'Played last game'
+		} else if (this.lastConsecutiveMatchesCount > 1) {
+			span.textContent = `Played last ${this.lastConsecutiveMatchesCount} games`
+
+			if (this.lastConsecutiveMatchesCount > 1) span.classList.add('bold')
+			if (this.lastConsecutiveMatchesCount > 2) span.classList.add('highlight')
+		}
+	}
+
+	addMatch(...matchId) {
+		this.#matches = [...this.#matches, ...matchId]
+
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
 	}
 
 	deleteMatch(matchId) {
-		this.matches = this.matches.filter((id) => id === matchId)
+		this.#matches = this.#matches.filter((id) => id !== matchId)
+
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
 	}
 
 	createPlayerElement() {
@@ -70,17 +132,26 @@ export class Player {
 		divNewPlayer.appendChild(btn)
 		divNewPlayer.classList.add('player', 'pill')
 		divNewPlayer.dataset.id = this.id
+
+		this.#dom.spanGameCount = spanGameCount
+		this.#dom.spanPreviousMatches = spanPreviousMatches
+		this.#dom.spanPairCount = spanPairCount
+		this.#dom.divPlayer = divNewPlayer
+
 		return divNewPlayer
 	}
 
-	static fromJSON({ id, matches, lastConsecutiveMatchesCount, matchesSinceLastMatch }) {
-		const newPlayer = new Player()
-		newPlayer.id = id
-		newPlayer.matches = matches
-		newPlayer.lastConsecutiveMatchesCount = lastConsecutiveMatchesCount
-		newPlayer.matchesSinceLastMatch = matchesSinceLastMatch
+	toJSON() {
+		return {
+			id: this.#id,
+			matches: this.#matches,
+			lastConsecutiveMatchesCount: this.#lastConsecutiveMatchesCount,
+			matchesSinceLastMatch: this.#matchesSinceLastMatch,
+		}
+	}
 
-		return newPlayer
+	static fromJSON(playerJSON) {
+		return new Player(playerJSON)
 	}
 }
 
@@ -150,6 +221,8 @@ export class Match {
 		newMatch.appendChild(span)
 		newMatch.appendChild(divTeam2)
 		newMatch.appendChild(btn)
+
+		newMatch.draggable = true
 
 		return newMatch
 	}

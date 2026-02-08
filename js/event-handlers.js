@@ -1,6 +1,13 @@
 import db from './database.js'
 import dom from './dom.js'
-import { Player, Match, MatchFactory } from './classes.js'
+import { Player } from './classes/Player.js'
+import { Match, MatchFactory } from './classes/Match.js'
+
+// for tracking drag events
+let isDragging = false
+let dragStartY
+let timePointerDown
+const DRAG_THRESHOLD_TIME = 500
 
 function addPlayer(e) {
 	if (e.type !== 'click' && e.key !== 'Enter') return
@@ -19,7 +26,8 @@ function addPlayer(e) {
 	if (newPlayerInstance === null) return
 
 	dom.addPlayer(newPlayerInstance)
-	dom.reloadPlayerList()
+	dom.sortPlayerList()
+	dom.haptic()
 
 	textIinputPlayerName.value = ''
 	textIinputPlayerName.focus()
@@ -33,11 +41,10 @@ function addMatch(e) {
 	db.addMatch(newMatch)
 
 	dom.updateMatchQueue()
-	dom.reloadPlayerList()
 	dom.addMatch(newMatch)
-	// dom.clearHighlightedPlayers()
-
-	return
+	dom.sortPlayerList()
+	dom.clearPlayerHighlight()
+	dom.haptic()
 }
 
 function clickPlayer(e) {
@@ -48,21 +55,19 @@ function clickPlayer(e) {
 	const playerId = elementPlayer.dataset.id
 	if (!playerId) return
 
-	const isHighlighted = elementPlayer.classList.contains('highlight')
+	const playerInstance = db.getPlayer(playerId)
 
-	let index
-	if (isHighlighted) {
-		index = MatchFactory.removePlayer(playerId)
+	if (playerInstance.queueIndex === -1) {
+		playerInstance.queueIndex = MatchFactory.addPlayer(playerId)
 	} else {
-		index = MatchFactory.addPlayer(playerId)
+		MatchFactory.removePlayer(playerId)
+		playerInstance.queueIndex = -1
 	}
 
-	// -1 is returned if player was not added/removed
-	if (index === -1) return
-
-	dom.togglePlayerHighlight(playerId)
+	db.savePlayerDBtoLocalStorage()
 	dom.updateMatchQueue()
 	dom.updatePlayersPairedCount()
+	dom.haptic()
 }
 
 function clickMatchQueue(e) {
@@ -73,16 +78,19 @@ function clickMatchQueue(e) {
 	const playerId = elementPlayer.dataset.id
 	if (!playerId) return
 
-	let index = MatchFactory.removePlayer(playerId)
+	const playerInstance = db.getPlayer(playerId)
 
-	// if (index === -1) return
+	MatchFactory.removePlayer(playerId)
+	playerInstance.queueIndex = -1
 
-	dom.togglePlayerHighlight(playerId)
+	db.savePlayerDBtoLocalStorage()
 	dom.updateMatchQueue()
 	dom.updatePlayersPairedCount()
+	dom.haptic()
 }
 
 function clickMatch(e) {
+	if (isDragging) return
 	if (e.target.tagName === 'BUTTON') return
 
 	const elementMatch = e.target.closest('.match')
@@ -90,17 +98,11 @@ function clickMatch(e) {
 	const matchId = +elementMatch.dataset.id
 	if (!matchId) return
 
-	const isDisabled = elementMatch.classList.contains('disabled')
 	const matchInstance = db.getMatch(matchId)
+	matchInstance.winner = matchInstance.winner ? null : true
 
-	if (isDisabled) {
-		matchInstance.winner = null
-	} else {
-		matchInstance.winner = true
-	}
-
-	dom.toggleMatchDisabled(matchId)
 	db.saveMatchDBToLocalStorage()
+	dom.haptic()
 }
 
 function deletePlayer(e) {
@@ -117,7 +119,9 @@ function deletePlayer(e) {
 	dom.updateMatchQueue()
 	dom.updatePlayersPairedCount()
 	elementPlayer.remove()
+	dom.haptic()
 }
+
 function deleteMatch(e) {
 	if (e.target.tagName !== 'BUTTON') return
 
@@ -127,7 +131,106 @@ function deleteMatch(e) {
 	const matchId = +elementMatch.dataset.id
 	db.deleteMatch(matchId)
 	elementMatch.remove()
-	dom.reloadPlayerList()
+
+	dom.sortPlayerList()
+	dom.updatePlayersPairedCount()
+	dom.haptic()
+}
+
+function matchPointerDown(e) {
+	if (e.target.tagName === 'BUTTON') return
+
+	const elementMatch = e.target.closest('.match')
+	if (!elementMatch) return
+
+	const matchId = elementMatch.dataset.id
+	const matchInstance = db.getMatch(matchId)
+
+	elementMatch.setPointerCapture(e.pointerId)
+
+	timePointerDown = Date.now()
+	dragStartY = e.clientY
+
+	const timeoutId = setTimeout(() => {
+		isDragging = true
+
+		elementMatch.classList.add('is-dragging')
+		elementMatch.addEventListener('pointermove', _matchPointerMove)
+		elementMatch.addEventListener(
+			'touchmove',
+			(event) => {
+				event.preventDefault()
+			},
+			{ once: true, passive: false },
+		)
+	}, DRAG_THRESHOLD_TIME)
+
+	function _reset() {
+		elementMatch.removeEventListener('pointermove', _matchPointerMove)
+		elementMatch.classList.remove('is-dragging')
+
+		db.getMatchArray().forEach((match) => {
+			match.divMatch.removeAttribute('style')
+		})
+
+		if (isDragging) {
+			db.moveMatch(startIndex, destinationIndex)
+			Array.from(document.getElementById('match-list').children).forEach((child) => {
+				child.remove()
+			})
+			dom.sortPlayerList()
+			dom.loadMatchList()
+		}
+
+		clearTimeout(timeoutId)
+		setTimeout(() => {
+			isDragging = false
+		}, 5)
+	}
+	elementMatch.addEventListener('pointerup', _reset, { once: true })
+	elementMatch.addEventListener('pointercancel', _reset, { once: true })
+}
+
+let startIndex
+let destinationIndex
+
+function _matchPointerMove(e) {
+	const elementMatch = e.target
+	const offset = Math.round(e.clientY - dragStartY)
+	elementMatch.style.translate = `0 ${offset}px`
+
+	const elementMatches = db.getMatchArray().map((match) => match.divMatch)
+
+	const moveMatchRect = elementMatch.getBoundingClientRect()
+	const moveMatchYCenter = moveMatchRect.bottom - moveMatchRect.height / 2
+	const moveMatchIndex = elementMatches.findIndex((match) => match.dataset.id === elementMatch.dataset.id)
+
+	startIndex = moveMatchIndex
+	destinationIndex = -1
+	const yDiffArr = elementMatches.map((match, i) => {
+		if (i === moveMatchIndex) return null
+
+		const rect = match.getBoundingClientRect()
+		const computedStyle = window.getComputedStyle(match)
+
+		const yCenter = rect.bottom - rect.height / 2
+		const yDiff = moveMatchYCenter - yCenter
+
+		const moveDistance = rect.height + parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
+		if (yDiff > 0 && i < moveMatchIndex) {
+			match.style.translate = `0 ${-moveDistance}px`
+		} else if (yDiff < 0 && i > moveMatchIndex) {
+			match.style.translate = `0 ${moveDistance}px`
+		} else {
+			match.setAttribute('style', '')
+		}
+
+		return yDiff
+	})
+
+	destinationIndex = yDiffArr.findIndex((yDiff) => yDiff > 0)
+
+	destinationIndex = destinationIndex === -1 ? elementMatches.length - 1 : destinationIndex
 }
 
 export default {
@@ -138,4 +241,5 @@ export default {
 	clickPlayer,
 	clickMatch,
 	clickMatchQueue,
+	matchPointerDown,
 }

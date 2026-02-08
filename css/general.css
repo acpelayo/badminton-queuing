@@ -6,15 +6,14 @@ button {
 	transition: transform 0.1s ease-out;
 }
 
-button:active,
-button:hover {
-	transform: scale(1.1);
+button:active {
+	transform: scale(0.9);
 }
 
-input {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+@media (hover: hover) {
+	button:hover {
+		transform: scale(0.9);
+	}
 }
 
 html,
@@ -60,9 +59,10 @@ button {
 }
 
 h2 {
-	text-align: center;
+	text-align: left;
 	margin-bottom: 10px;
 	font-size: 30px;
+	padding-left: 20px;
 }
 
 .hidden {
@@ -70,15 +70,32 @@ h2 {
 }
 
 .pill {
+	position: relative;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 	height: 60px;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 	background-color: var(--color-main);
 	border-radius: 30px;
-	transition: background-color 0.25s ease-out;
+	transition:
+		background-color 0.25s ease-out,
+		transform 0.1s ease-out;
+	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
+	user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }
+
+.pill:active:not(:has(button:active)) {
+	transform: scale(0.95);
+}
+
+/* @media (hover: hover) {
+	.pill:hover:not(:has(button:hover)) {
+		transform: scale(0.95);
+	}
+} */
 
 .bold {
 	font-weight: bold;
