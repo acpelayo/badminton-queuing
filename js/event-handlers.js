@@ -144,6 +144,7 @@ function matchPointerDown(e) {
 
 	const elementMatch = e.target.closest('.match')
 	if (!elementMatch) return
+	dom.haptic()
 
 	const matchId = +elementMatch.dataset.id
 	const matchInstance = db.getMatch(matchId)
@@ -159,6 +160,7 @@ function matchPointerDown(e) {
 	const timeoutId = setTimeout(() => {
 		isDragging = true
 
+		dom.haptic()
 		elementMatch.classList.add('is-dragging')
 		elementMatch.addEventListener('pointermove', _matchPointerMove)
 		elementMatch.addEventListener(
@@ -178,19 +180,18 @@ function matchPointerDown(e) {
 			match.divMatch.removeAttribute('style')
 		})
 
-		if (isDragging) {
-			db.moveMatch(fromIndex, toIndex)
-			Array.from(document.getElementById('match-list').children).forEach((child) => {
-				child.remove()
-			})
-			dom.sortPlayerList()
-			dom.loadMatchList()
-		}
-
 		clearTimeout(timeoutId)
 		setTimeout(() => {
 			isDragging = false
 		}, 5)
+
+		if (isDragging) {
+			db.moveMatch(fromIndex, toIndex)
+
+			dom.sortPlayerList()
+			dom.clearMatchList()
+			dom.loadMatchList()
+		}
 	}
 	elementMatch.addEventListener('pointerup', _reset, { once: true })
 	elementMatch.addEventListener('pointercancel', _reset, { once: true })
@@ -199,38 +200,8 @@ function matchPointerDown(e) {
 function _matchPointerMove(e) {
 	const elementMatch = e.target
 	const offset = Math.round(e.clientY - dragStartY)
-	elementMatch.style.translate = `0 ${offset}px`
 
-	const elementMatches = db.getMatchArray().map((match) => match.divMatch)
-
-	const moveMatchRect = elementMatch.getBoundingClientRect()
-	const moveMatchYCenter = moveMatchRect.bottom - moveMatchRect.height / 2
-	const moveMatchIndex = elementMatches.findIndex((match) => match.dataset.id === elementMatch.dataset.id)
-
-	const yDiffArr = elementMatches.map((match, i) => {
-		if (i === moveMatchIndex) return null
-
-		const rect = match.getBoundingClientRect()
-		const computedStyle = window.getComputedStyle(match)
-
-		const yCenter = rect.bottom - rect.height / 2
-		const yDiff = moveMatchYCenter - yCenter
-
-		const moveDistance = rect.height + parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
-		if (yDiff > 0 && i < moveMatchIndex) {
-			match.style.translate = `0 ${-moveDistance}px`
-		} else if (yDiff < 0 && i > moveMatchIndex) {
-			match.style.translate = `0 ${moveDistance}px`
-		} else {
-			match.setAttribute('style', '')
-		}
-
-		return yDiff
-	})
-
-	toIndex = yDiffArr.findIndex((yDiff) => yDiff > 0)
-	if (toIndex > fromIndex) toIndex = toIndex - 1
-	toIndex = toIndex === -1 ? elementMatches.length - 1 : toIndex
+	toIndex = dom.moveMatch(elementMatch, offset)
 }
 
 export default {

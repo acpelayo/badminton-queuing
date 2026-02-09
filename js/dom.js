@@ -126,12 +126,51 @@ function sortPlayerList() {
 		player.divPlayer.remove()
 		elementPlayerList.appendChild(player.divPlayer)
 	})
+}
 
-	// for (let i = 1; i < players.length; i++) {
-	// 	const firstElement = players[i - 1].divPlayer
-	// 	const secondElement = players[i].divPlayer
-	// 	firstElement.after(secondElement)
-	// }
+function moveMatch(elementMatch, moveDistance) {
+	elementMatch.style.translate = `0 ${moveDistance}px`
+
+	const elementMatches = db.getMatchArray().map((match) => match.divMatch)
+
+	const moveMatchRect = elementMatch.getBoundingClientRect()
+	const moveMatchYCenter = moveMatchRect.bottom - moveMatchRect.height / 2
+	const moveMatchIndex = elementMatches.findIndex((match) => match.dataset.id === elementMatch.dataset.id)
+
+	const yDiffArr = elementMatches.map((match, i) => {
+		if (i === moveMatchIndex) return null
+
+		const rect = match.getBoundingClientRect()
+		const computedStyle = window.getComputedStyle(match)
+
+		const yCenter = rect.bottom - rect.height / 2
+		const yDiff = moveMatchYCenter - yCenter
+
+		const moveDistance = rect.height + parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
+		if (yDiff > 0 && i < moveMatchIndex) {
+			match.style.translate = `0 ${-moveDistance}px`
+		} else if (yDiff < 0 && i > moveMatchIndex) {
+			match.style.translate = `0 ${moveDistance}px`
+		} else {
+			match.setAttribute('style', '')
+		}
+
+		return yDiff
+	})
+
+	let newIndex = yDiffArr.findIndex((yDiff) => yDiff > 0)
+	if (newIndex > moveMatchIndex) newIndex = newIndex - 1
+	else if (newIndex === -1) newIndex = elementMatches.length - 1
+
+	return newIndex
+}
+
+function clearMatchList() {
+	Array.from(document.getElementById('match-list').children).forEach((element) => element.remove())
+}
+
+function clearPlayerList() {
+	Array.from(document.getElementById('player-list').children).forEach((element) => element.remove())
 }
 
 // ------------------------------- //
@@ -160,4 +199,7 @@ export default {
 	updatePlayersPairedCount,
 	sortPlayerList,
 	haptic,
+	moveMatch,
+	clearPlayerList,
+	clearMatchList,
 }
