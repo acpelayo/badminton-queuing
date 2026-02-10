@@ -1,7 +1,9 @@
 import db from './database.js'
+import animate from './animations.js'
+import utils from './utils.js'
+
 import { Player } from './classes/Player.js'
 import { Match, MatchFactory } from './classes/Match.js'
-import animate from './animations.js'
 
 function haptic() {
 	const elementHaptic = document.getElementById('haptic')
@@ -131,7 +133,7 @@ function sortPlayerList() {
 function moveMatch(elementMatch, moveDistance) {
 	elementMatch.style.translate = `0 ${moveDistance}px`
 
-	const elementMatches = db.getMatchArray().map((match) => match.divMatch)
+	const elementMatches = Array.from(document.getElementById('match-list').children).reverse()
 
 	const moveMatchRect = elementMatch.getBoundingClientRect()
 	const moveMatchYCenter = moveMatchRect.bottom - moveMatchRect.height / 2
@@ -141,18 +143,17 @@ function moveMatch(elementMatch, moveDistance) {
 		if (i === moveMatchIndex) return null
 
 		const rect = match.getBoundingClientRect()
-		const computedStyle = window.getComputedStyle(match)
-
 		const yCenter = rect.bottom - rect.height / 2
 		const yDiff = moveMatchYCenter - yCenter
 
-		const moveDistance = rect.height + parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
+		const matchComputedHeight = utils.getElementComputedHeight(match)
+
 		if (yDiff > 0 && i < moveMatchIndex) {
-			match.style.translate = `0 ${-moveDistance}px`
+			match.style.translate = `0 ${-matchComputedHeight}px`
 		} else if (yDiff < 0 && i > moveMatchIndex) {
-			match.style.translate = `0 ${moveDistance}px`
+			match.style.translate = `0 ${matchComputedHeight}px`
 		} else {
-			match.setAttribute('style', '')
+			match.removeAttribute('style')
 		}
 
 		return yDiff

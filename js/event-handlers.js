@@ -2,11 +2,10 @@ import db from './database.js'
 import dom from './dom.js'
 import { Player } from './classes/Player.js'
 import { Match, MatchFactory } from './classes/Match.js'
+import utils from './utils.js'
 
 // for tracking drag events
 let isDragging = false
-let dragStartY
-let timePointerDown
 const DRAG_THRESHOLD_TIME = 500
 
 function addPlayer(e) {
@@ -137,26 +136,32 @@ function deleteMatch(e) {
 	dom.haptic()
 }
 
-let fromIndex
-let toIndex
 function matchPointerDown(e) {
 	if (e.target.tagName === 'BUTTON') return
 
 	const elementMatch = e.target.closest('.match')
 	if (!elementMatch) return
+
+	let fromIndex
+	let toIndex
 	dom.haptic()
 
 	const matchId = +elementMatch.dataset.id
-	const matchInstance = db.getMatch(matchId)
 
+	// initialize  variables
 	fromIndex = db.getMatchArray().findIndex((match) => match.id === matchId)
 	toIndex = fromIndex
+	let dragStartY = e.clientY
+	let offset = 0
 
 	elementMatch.setPointerCapture(e.pointerId)
 
-	timePointerDown = Date.now()
-	dragStartY = e.clientY
+	function _matchPointerMove(pointerMoveEvent) {
+		offset = Math.round(pointerMoveEvent.clientY - dragStartY)
+		toIndex = dom.moveMatch(elementMatch, offset)
+	}
 
+	// this function will fire if 'pointerup' is not triggered within the threshold time
 	const timeoutId = setTimeout(() => {
 		isDragging = true
 
@@ -170,38 +175,35 @@ function matchPointerDown(e) {
 			},
 			{ once: true, passive: false },
 		)
+		elementMatch.style.zIndex = 1000
 	}, DRAG_THRESHOLD_TIME)
 
 	function _reset() {
 		elementMatch.removeEventListener('pointermove', _matchPointerMove)
 		elementMatch.classList.remove('is-dragging')
 
-		db.getMatchArray().forEach((match) => {
-			match.divMatch.removeAttribute('style')
-		})
-
 		clearTimeout(timeoutId)
 		setTimeout(() => {
 			isDragging = false
 		}, 5)
-
 		if (isDragging) {
 			db.moveMatch(fromIndex, toIndex)
 
+			offset = 70 * (fromIndex - toIndex)
+			dom.moveMatch(elementMatch, offset)
 			dom.sortPlayerList()
-			dom.clearMatchList()
-			dom.loadMatchList()
+			setTimeout(() => {
+				dom.clearMatchList()
+
+				db.getMatchArray().forEach((match) => {
+					match.divMatch.removeAttribute('style')
+				})
+				dom.loadMatchList()
+			}, 250)
 		}
 	}
 	elementMatch.addEventListener('pointerup', _reset, { once: true })
 	elementMatch.addEventListener('pointercancel', _reset, { once: true })
-}
-
-function _matchPointerMove(e) {
-	const elementMatch = e.target
-	const offset = Math.round(e.clientY - dragStartY)
-
-	toIndex = dom.moveMatch(elementMatch, offset)
 }
 
 export default {
