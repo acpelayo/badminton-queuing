@@ -5,8 +5,22 @@
 	margin-bottom: 20px;
 }
 
+.player.pill {
+	transition:
+		background-color 0.25s ease-out,
+		transform 0.1s ease-out,
+		translate 0.5s ease-out,
+		border-color 0.1s ease-out;
+}
+
+.player.team1,
+.player.team2 {
+	transform: scale(1.05);
+}
+
 .player.team1 {
 	background-color: var(--color-blue);
+	border-color: var(--color-blue);
 }
 .player.team1 .count-games {
 	border-color: var(--color-blue);
@@ -18,6 +32,7 @@
 
 .player.team2 {
 	background-color: var(--color-red);
+	border-color: var(--color-red);
 }
 .player.team2 .count-games {
 	border-color: var(--color-red);
@@ -62,7 +77,6 @@
 	transition:
 		border-color 0.1s ease-out,
 		color 0.1s ease-out;
-	/* box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.3); */
 }
 
 .player .player-name {
@@ -93,7 +107,6 @@
 .player .count-pair {
 	padding-left: 10px;
 	padding-right: 5px;
-	/* font-size: 10px; */
 }
 
 .player > button,

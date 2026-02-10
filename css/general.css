@@ -81,13 +81,13 @@ h2 {
 	transition:
 		background-color 0.25s ease-out,
 		transform 0.1s ease-out,
-		translate 0.25s ease-out;
+		translate 0.25s ease-out,
+		border-color 0.1s ease-out;
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
 	user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
-	border: 1px solid var(--color-gray);
-	overflow: hidden;
+	border: 1px solid rgb(from var(--color-secondary) r g b / 0.35);
 }
 
 .pill:active:not(:has(button:active)) {

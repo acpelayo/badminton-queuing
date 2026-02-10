@@ -64,6 +64,7 @@
 
 .match.disabled {
 	background-color: var(--color-gray);
+	border-color: var(--color-gray);
 }
 
 .match.disabled .team {
@@ -84,7 +85,8 @@
 	transition:
 		background-color 0.25s ease-out,
 		transform 0.1s ease-out,
-		translate 0s ease-out;
+		translate 0s ease-out,
+		border-color 0.1s ease-out;
 }
 
 .match-player {

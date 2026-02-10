@@ -161,7 +161,7 @@ function sortPlayerList() {
 	const elementPlayers = Array.from(elementPlayerList.children)
 
 	if (players.length === 0) return
-	const elementHeight = utils.getElementComputedHeight(elementPlayers[0])
+	const elementHeight = 70
 
 	for (let i = 0; i < players.length; i++) {
 		const player = players[i]
@@ -175,7 +175,7 @@ function sortPlayerList() {
 		playerElement.style.translate = `0 ${moveDistance}px`
 	}
 
-	const transitionDuration = 250
+	const transitionDuration = 500
 	setTimeout(() => {
 		players.forEach((player) => {
 			player.divPlayer.remove()
