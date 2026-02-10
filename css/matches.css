@@ -37,6 +37,12 @@
 	font-size: 30px;
 }
 
+.add-match > button {
+	transition: color 0.1s ease-out;
+
+	color: var(--color-secondary);
+}
+
 .match > span,
 .add-match > span {
 	display: flex;
@@ -108,12 +114,18 @@
 .add-match .match-player {
 	transition: background-color 0.25s ease-out;
 }
+.add-match > div {
+	transition: background-color 0.25s ease-out;
+	background-color: white;
+}
 
 .add-match > span {
 	color: white;
 }
 
-.add-match .match-player.highlight {
-	background-color: var(--color-main);
-	color: white;
+.add-match .team1 {
+	border: 3px solid var(--color-blue);
+}
+.add-match .team2 {
+	border: 3px solid var(--color-red);
 }

@@ -174,6 +174,19 @@ export class MatchFactory {
 			this.currentPlayers[i] = playerArr[i] || null
 		}
 	}
+	static getTeamOfPlayer(playerId) {
+		const index = this.currentPlayers.findIndex(playerId)
+
+		switch (index) {
+			case 0:
+			case 1:
+				return 1
+			case 2:
+			case 3:
+				return 2
+		}
+		return -1
+	}
 
 	static get isFull() {
 		return !MatchFactory.currentPlayers.includes(null)

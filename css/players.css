@@ -5,12 +5,26 @@
 	margin-bottom: 20px;
 }
 
-.player.highlight {
-	background-color: var(--color-secondary);
+.player.team1 {
+	background-color: var(--color-blue);
+}
+.player.team1 .count-games {
+	border-color: var(--color-blue);
+	color: var(--color-blue);
+}
+.player.team1 button {
+	color: var(--color-blue);
 }
 
-.player.highlight .count-games {
-	border-color: var(--color-secondary);
+.player.team2 {
+	background-color: var(--color-red);
+}
+.player.team2 .count-games {
+	border-color: var(--color-red);
+	color: var(--color-red);
+}
+.player.team2 button {
+	color: var(--color-red);
 }
 
 .player > div {
@@ -21,6 +35,7 @@
 	display: grid;
 	grid-template-columns: 60px 1fr;
 	grid-template-rows: 28px 1fr;
+	grid-auto-flow: dense;
 	flex-shrink: 0;
 	min-width: 200px;
 	width: 50%;
@@ -38,26 +53,29 @@
 	font-weight: bold;
 	width: 60px;
 	height: 60px;
-	border: 5px solid var(--color-main);
+	border: 5px solid var(--color-secondary);
+	color: var(--color-secondary);
 	border-radius: 30px;
 	margin-right: 10px;
 	margin-top: -5px;
-	margin-bottom: -5px;
-	transition: border-color 0.1s ease-out;
-	box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3);
+	margin-left: -1px;
+	transition:
+		border-color 0.1s ease-out,
+		color 0.1s ease-out;
+	/* box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.3); */
 }
 
 .player .player-name {
-	grid-area: 1 / 2 / 2 / 3;
+	grid-area: 1 / 2 / 3 / 3;
 	font-size: 16px;
 	font-weight: bold;
 	padding-left: 10px;
-	align-self: end;
+	align-self: center;
 }
 
-.player .player-name:has(+ .previous-matches:empty) {
-	grid-area: 1 / 2 / 3 / 3;
-	align-self: center;
+.player .player-name.with-details {
+	grid-area: 1 / 2 / 2 / 3;
+	align-self: end;
 }
 
 .player .previous-matches {
@@ -69,12 +87,13 @@
 }
 
 .player .previous-matches.highlight {
-	color: var(--color-secondary);
+	color: var(--color-red);
 }
 
 .player .count-pair {
 	padding-left: 10px;
 	padding-right: 5px;
+	/* font-size: 10px; */
 }
 
 .player > button,

@@ -7,6 +7,7 @@ export class Player {
 	#dom = {
 		divPlayer: null,
 		spanGameCount: null,
+		spanPlayerName: null,
 		spanPreviousMatches: null,
 		spanPairCount: null,
 	}
@@ -53,20 +54,25 @@ export class Player {
 	set matchesSinceLastMatch(newCount) {
 		this.#matchesSinceLastMatch = newCount
 
-		const span = this.#dom.spanPreviousMatches || null
-		if (!span) return
+		const spanPlayerName = this.#dom.spanPlayerName || null
+		const spanPreviousMatches = this.#dom.spanPreviousMatches || null
 
-		span.classList.remove('bold', 'highlight')
-		span.textContent = ''
-		if (newCount > 0) return
+		if (!spanPreviousMatches || !spanPlayerName) return
+
+		spanPlayerName.classList.remove('with-details')
+		spanPreviousMatches.classList.remove('bold', 'highlight')
+		spanPreviousMatches.textContent = ''
+
+		if (newCount > 0 || newCount === -1) return
+		spanPlayerName.classList.add('with-details')
 
 		if (this.lastConsecutiveMatchesCount === 1) {
-			span.textContent = 'Played last game'
+			spanPreviousMatches.textContent = 'Played last game'
 		} else if (this.lastConsecutiveMatchesCount > 1) {
-			span.textContent = `Played last ${this.lastConsecutiveMatchesCount} games`
+			spanPreviousMatches.textContent = `Played last ${this.lastConsecutiveMatchesCount} games`
 
-			if (this.lastConsecutiveMatchesCount > 1) span.classList.add('bold')
-			if (this.lastConsecutiveMatchesCount > 2) span.classList.add('highlight')
+			if (this.lastConsecutiveMatchesCount > 1) spanPreviousMatches.classList.add('bold')
+			if (this.lastConsecutiveMatchesCount > 2) spanPreviousMatches.classList.add('highlight')
 		}
 	}
 	set queueIndex(newQueueIndex) {
@@ -74,10 +80,19 @@ export class Player {
 		else this.#queueIndex = newQueueIndex
 
 		if (!this.#dom.divPlayer) return
-		if (this.#queueIndex === -1) {
-			this.#dom.divPlayer.classList.remove('highlight')
-		} else {
-			this.#dom.divPlayer.classList.add('highlight')
+
+		this.#dom.divPlayer.classList.remove('team1', 'team2')
+		if (this.#queueIndex === -1) return
+
+		switch (this.#queueIndex) {
+			case 0:
+			case 1:
+				this.#dom.divPlayer.classList.add('team1')
+				break
+			case 2:
+			case 3:
+				this.#dom.divPlayer.classList.add('team2')
+				break
 		}
 	}
 
@@ -113,6 +128,8 @@ export class Player {
 		spanPlayerName.textContent = this.id
 
 		if (this.matchesSinceLastMatch === 0) {
+			spanPlayerName.classList.add('with-details')
+
 			if (this.lastConsecutiveMatchesCount === 1) {
 				spanPreviousMatches.textContent = 'Played last game'
 			} else if (this.lastConsecutiveMatchesCount > 1) {
@@ -144,9 +161,19 @@ export class Player {
 		divNewPlayer.classList.add('player', 'pill')
 		divNewPlayer.dataset.id = this.id
 
-		if (this.#queueIndex !== -1) divNewPlayer.classList.add('highlight')
+		switch (this.#queueIndex) {
+			case 0:
+			case 1:
+				divNewPlayer.classList.add('team1')
+				break
+			case 2:
+			case 3:
+				divNewPlayer.classList.add('team2')
+				break
+		}
 
 		this.#dom.spanGameCount = spanGameCount
+		this.#dom.spanPlayerName = spanPlayerName
 		this.#dom.spanPreviousMatches = spanPreviousMatches
 		this.#dom.spanPairCount = spanPairCount
 		this.#dom.divPlayer = divNewPlayer

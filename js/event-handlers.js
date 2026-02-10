@@ -40,6 +40,7 @@ function addMatch(e) {
 	db.addMatch(newMatch)
 
 	dom.updateMatchQueue()
+	dom.updatePlayersPairedCount()
 	dom.addMatch(newMatch)
 	dom.sortPlayerList()
 	dom.clearPlayerHighlight()

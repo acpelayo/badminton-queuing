@@ -78,10 +78,10 @@ function updateMatchQueue() {
 		}
 
 		if (!currentPlayer && iFirstEmpty === -1) {
-			currentPlayerElement.classList.add('highlight')
+			// currentPlayerElement.classList.add('highlight')
 			iFirstEmpty = i
 		} else {
-			currentPlayerElement.classList.remove('highlight')
+			// currentPlayerElement.classList.remove('highlight')
 		}
 	}
 
@@ -94,40 +94,95 @@ function updateMatchQueue() {
 }
 
 function updatePlayersPairedCount() {
-	const elementPlayers = document.getElementById('player-list').children
+	const elementPlayers = Array.from(document.getElementById('player-list').children)
+
+	// reset text content
+	elementPlayers.forEach((player) => {
+		player.querySelector('.count-pair').textContent = ''
+	})
+
+	// for players of incomplete team
+	let mainPlayerId
+	if (MatchFactory.team1.length === 1) {
+		;[mainPlayerId] = MatchFactory.team1
+	} else if (MatchFactory.team2.length === 1 && MatchFactory.team1.length !== 0) {
+		;[mainPlayerId] = MatchFactory.team2
+	}
 
 	for (let i = 0; i < elementPlayers.length; i++) {
 		const elementCurrentPlayer = elementPlayers[i]
-		const elementPairCount = elementCurrentPlayer.querySelector('.count-pair')
-
-		let mainPlayerId = null
-		if (MatchFactory.team1.length === 1) {
-			mainPlayerId = MatchFactory.team1[0]
-		} else if (MatchFactory.team2.length === 1 && MatchFactory.team1.length !== 0) {
-			mainPlayerId = MatchFactory.team2[0]
-		}
-
 		const comparePlayerId = elementCurrentPlayer.dataset.id
 		const pairCount = _countMatchesPaired(mainPlayerId, comparePlayerId)
 
 		if (pairCount > 0 && !MatchFactory.includesPlayer(comparePlayerId)) {
-			elementPairCount.textContent = `Paired ${pairCount} time${pairCount === 1 ? '' : 's'} with ${mainPlayerId}`
-			elementPairCount.classList.remove('hidden')
-		} else {
-			elementPairCount.textContent = ''
-			elementPairCount.classList.add('hidden')
+			const elementPairCount = elementCurrentPlayer.querySelector('.count-pair')
+			elementPairCount.textContent = `Paired ${pairCount}x with ${mainPlayerId}`
 		}
 	}
+
+	// for players of complete team1
+	let playerId1, playerId2, pairCount
+	if (MatchFactory.team1.length === 2) {
+		;[playerId1, playerId2] = MatchFactory.team1
+		pairCount = _countMatchesPaired(playerId1, playerId2)
+	}
+
+	if (pairCount > 0) {
+		elementPlayers.forEach((player) => {
+			const currentPlayerId = player.dataset.id
+			if (currentPlayerId === playerId1 || currentPlayerId === playerId2) {
+				const elementPairCount = player.querySelector('.count-pair')
+				elementPairCount.textContent = `Paired ${pairCount}x with ${currentPlayerId === playerId1 ? playerId2 : playerId1}`
+			}
+		})
+	}
+	// for players of complete team2
+	if (MatchFactory.team2.length === 2) {
+		;[playerId1, playerId2] = MatchFactory.team2
+		pairCount = _countMatchesPaired(playerId1, playerId2)
+	}
+	if (pairCount > 0) {
+		elementPlayers.forEach((player) => {
+			const currentPlayerId = player.dataset.id
+			if (currentPlayerId === playerId1 || currentPlayerId === playerId2) {
+				const elementPairCount = player.querySelector('.count-pair')
+				elementPairCount.textContent = `Paired ${pairCount}x with ${currentPlayerId === playerId1 ? playerId2 : playerId1}`
+			}
+		})
+	}
+
+	//
 }
 
 function sortPlayerList() {
 	const players = db.getPlayerArray()
 
 	const elementPlayerList = document.getElementById('player-list')
-	players.forEach((player) => {
-		player.divPlayer.remove()
-		elementPlayerList.appendChild(player.divPlayer)
-	})
+	const elementPlayers = Array.from(elementPlayerList.children)
+
+	if (players.length === 0) return
+	const elementHeight = utils.getElementComputedHeight(elementPlayers[0])
+
+	for (let i = 0; i < players.length; i++) {
+		const player = players[i]
+
+		const currentPlayerIndex = elementPlayers.findIndex((el) => el.dataset.id === player.id)
+		const newPlayerIndex = players.findIndex((p) => p.id === player.id)
+
+		const moveDistance = elementHeight * (newPlayerIndex - currentPlayerIndex)
+
+		const playerElement = player.divPlayer
+		playerElement.style.translate = `0 ${moveDistance}px`
+	}
+
+	const transitionDuration = 250
+	setTimeout(() => {
+		players.forEach((player) => {
+			player.divPlayer.remove()
+			player.divPlayer.removeAttribute('style')
+			elementPlayerList.appendChild(player.divPlayer)
+		})
+	}, transitionDuration)
 }
 
 function moveMatch(elementMatch, moveDistance) {
