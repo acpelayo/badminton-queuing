@@ -16,7 +16,27 @@ function moveDown(element) {
 	}, duration)
 }
 
+function fadeAwayLeft(element) {
+	const duration = 500
+
+	element.classList.add('animate-fade-away-left')
+	setTimeout(() => {
+		element.classList.remove('animate-fade-away-left')
+	}, duration)
+}
+
+function moveUp(element) {
+	const duration = 500
+
+	element.classList.add('animate-move-up')
+	setTimeout(() => {
+		element.classList.remove('animate-move-up')
+	}, duration)
+}
+
 export default {
 	fadeFromAbove,
+	fadeAwayLeft,
 	moveDown,
+	moveUp,
 }
