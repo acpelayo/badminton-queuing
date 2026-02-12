@@ -1,9 +1,10 @@
 export class Player {
 	#id
-	#matches = []
-	#lastConsecutiveMatchesCount = 0
-	#matchesSinceLastMatch = -1
-	#queueIndex = -1
+	#playerName
+	#matches
+	#lastConsecutiveMatchesCount
+	#matchesSinceLastMatch
+	#queueIndex
 	#dom = {
 		divPlayer: null,
 		spanGameCount: null,
@@ -13,15 +14,12 @@ export class Player {
 	}
 
 	constructor(playerData) {
-		if (typeof playerData === 'object') {
-			this.#id = playerData.id || Date.now()
-			this.#matches = playerData.matches || []
-			this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount !== undefined ? playerData.lastConsecutiveMatchesCount : 0
-			this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch !== undefined ? playerData.matchesSinceLastMatch : -1
-			this.#queueIndex = playerData.queueIndex !== undefined ? playerData.queueIndex : -1
-			return
-		}
-		this.#id = playerData
+		this.#playerName = playerData.playerName || Date.now().toString()
+		this.#id = playerData.id || this.#playerName.toLowerCase()
+		this.#matches = playerData.matches || []
+		this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount !== undefined ? playerData.lastConsecutiveMatchesCount : 0
+		this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch !== undefined ? playerData.matchesSinceLastMatch : -1
+		this.#queueIndex = playerData.queueIndex !== undefined ? playerData.queueIndex : -1
 	}
 
 	get matchCount() {
@@ -29,6 +27,9 @@ export class Player {
 	}
 	get id() {
 		return this.#id
+	}
+	get playerName() {
+		return this.#playerName
 	}
 	get matches() {
 		return this.#matches
@@ -125,7 +126,7 @@ export class Player {
 		spanPairCount.classList.add('count-pair')
 
 		spanGameCount.textContent = this.matchCount
-		spanPlayerName.textContent = this.id
+		spanPlayerName.textContent = this.playerName
 
 		if (this.matchesSinceLastMatch === 0) {
 			spanPlayerName.classList.add('with-details')
@@ -181,6 +182,7 @@ export class Player {
 
 	toJSON() {
 		return {
+			playerName: this.#playerName,
 			id: this.#id,
 			matches: this.#matches,
 			lastConsecutiveMatchesCount: this.#lastConsecutiveMatchesCount,

@@ -5,15 +5,17 @@ let _dbPlayers = []
 let _dbMatches = []
 
 // PLAYER FUNCTIONS
-function addPlayer(newPlayerId) {
+function addPlayer(newPlayerName) {
+	const newPlayerId = newPlayerName.toLowerCase()
+
 	// check if player exists
 	if (_dbPlayers.filter((player) => player.id === newPlayerId).length !== 0) return null
 
-	const newPlayer = new Player(newPlayerId)
+	const newPlayer = new Player({ playerName: newPlayerName })
 
 	// check if player has played in existing matches
 	_dbMatches.forEach((match) => {
-		if (match.includesPlayer(newPlayerId)) {
+		if (match.includesPlayer(newPlayerName)) {
 			newPlayer.addMatch(match.id)
 		}
 	})
@@ -92,7 +94,13 @@ function saveMatchDBToLocalStorage() {
 
 function retrievePlayerDBFromLocalStorage() {
 	const playerInfo = JSON.parse(localStorage.getItem('dbPlayer')) || []
-	_dbPlayers = playerInfo.map((playerJSON) => Player.fromJSON(playerJSON))
+	_dbPlayers = playerInfo
+		.map((playerJSON) => {
+			if (playerJSON.playerName === undefined) return null
+
+			return Player.fromJSON(playerJSON)
+		})
+		.filter((x) => x !== null)
 }
 function retrieveMatchDBFromLocalStorage() {
 	const matchInfo = JSON.parse(localStorage.getItem('dbMatch')) || []
