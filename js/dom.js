@@ -229,6 +229,33 @@ function clearPlayerList() {
 	Array.from(document.getElementById('player-list').children).forEach((element) => element.remove())
 }
 
+function showModal(message = '', onOk) {
+	const elementModal = document.getElementById('modal')
+	const elementModalMessage = document.getElementById('modal-message')
+	const btnOk = document.getElementById('modal-ok')
+	const btnCancel = document.getElementById('modal-cancel')
+
+	elementModal.classList.add('show')
+	elementModalMessage.innerHTML = message
+
+	function _cleanup() {
+		elementModalMessage.innerHTML = ''
+		elementModal.classList.remove('show')
+		elementModal.removeEventListener('click', _handler)
+	}
+	function _handler(e) {
+		const target = e.target
+		if (target === btnOk) {
+			onOk()
+			_cleanup()
+		} else if (target === btnCancel || target === elementModal) {
+			_cleanup()
+		}
+	}
+
+	elementModal.addEventListener('click', _handler)
+}
+
 // ------------------------------- //
 // UTILITY FUNCTIONS
 // ------------------------------- //
@@ -258,4 +285,5 @@ export default {
 	moveMatch,
 	clearPlayerList,
 	clearMatchList,
+	showModal,
 }

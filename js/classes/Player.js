@@ -1,9 +1,9 @@
 export class Player {
 	#id
-	#matches = []
-	#lastConsecutiveMatchesCount = 0
-	#matchesSinceLastMatch = -1
-	#queueIndex = -1
+	#matches
+	#lastConsecutiveMatchesCount
+	#matchesSinceLastMatch
+	#queueIndex
 	#dom = {
 		divPlayer: null,
 		spanGameCount: null,
@@ -13,15 +13,11 @@ export class Player {
 	}
 
 	constructor(playerData) {
-		if (typeof playerData === 'object') {
-			this.#id = playerData.id || Date.now()
-			this.#matches = playerData.matches || []
-			this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount !== undefined ? playerData.lastConsecutiveMatchesCount : 0
-			this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch !== undefined ? playerData.matchesSinceLastMatch : -1
-			this.#queueIndex = playerData.queueIndex !== undefined ? playerData.queueIndex : -1
-			return
-		}
-		this.#id = playerData
+		this.#id = playerData.id
+		this.#matches = playerData.matches || []
+		this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount !== undefined ? playerData.lastConsecutiveMatchesCount : 0
+		this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch !== undefined ? playerData.matchesSinceLastMatch : -1
+		this.#queueIndex = playerData.queueIndex !== undefined ? playerData.queueIndex : -1
 	}
 
 	get matchCount() {
@@ -110,6 +106,16 @@ export class Player {
 		if (this.#dom.spanGameCount !== null) {
 			this.#dom.spanGameCount.textContent = this.#matches.length
 		}
+	}
+
+	deleteAllMatches() {
+		this.#matches = []
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
+
+		this.lastConsecutiveMatchesCount = 0
+		this.matchesSinceLastMatch = -1
 	}
 
 	#createPlayerElement() {

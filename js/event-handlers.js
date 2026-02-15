@@ -16,10 +16,10 @@ function addPlayer(e) {
 		textIinputPlayerName = textIinputPlayerName.previousElementSibling
 	}
 
-	const newPlayerId = textIinputPlayerName.value.trim()
-	if (!newPlayerId) return
+	const newPlayerName = textIinputPlayerName.value.trim()
+	if (!newPlayerName) return
 
-	const newPlayerInstance = db.addPlayer(newPlayerId)
+	const newPlayerInstance = db.addPlayer(newPlayerName)
 
 	// null is returned if player already exists
 	if (newPlayerInstance === null) return
@@ -45,6 +45,77 @@ function addMatch(e) {
 	dom.sortPlayerList()
 	dom.clearPlayerHighlight()
 	dom.haptic()
+}
+
+function deletePlayer(e) {
+	if (e.target.tagName !== 'BUTTON') return
+
+	const elementPlayer = e.target.closest('.player')
+	if (!elementPlayer) return
+
+	const playerId = elementPlayer.dataset.id
+	dom.haptic()
+	function _onOk() {
+		if (MatchFactory.includesPlayer(playerId)) MatchFactory.removePlayer(playerId)
+		db.deletePlayer(playerId)
+
+		dom.updateMatchQueue()
+		dom.updatePlayersPairedCount()
+		elementPlayer.remove()
+		dom.haptic()
+	}
+
+	dom.showModal(`<span>Delete player&nbsp<b>${playerId}</b>?</span>`, _onOk)
+}
+
+function deleteMatch(e) {
+	if (e.target.tagName !== 'BUTTON') return
+
+	const elementMatch = e.target.closest('.match')
+	if (!elementMatch) return
+
+	const matchId = +elementMatch.dataset.id
+	const matchInstance = db.getMatch(matchId)
+	const players = matchInstance.players
+	dom.haptic()
+
+	function _onOk() {
+		db.deleteMatch(matchId)
+		elementMatch.remove()
+
+		dom.sortPlayerList()
+		dom.updatePlayersPairedCount()
+		dom.haptic()
+	}
+	const strMatchup = `<b>${players[0]} + ${players[1]}</b> vs <b> ${players[2]} + ${players[3]}</b>`
+	dom.showModal(`Delete this match?<span>${strMatchup}</span>`, _onOk)
+}
+
+function deleteAllPlayers(e) {
+	function _onOk() {
+		MatchFactory.reset()
+
+		db.deleteAllPlayers()
+
+		dom.updateMatchQueue()
+		dom.clearPlayerList()
+		dom.haptic()
+	}
+
+	dom.showModal('<b>Delete all players?</b>', _onOk)
+}
+
+function deleteAllMatches(e) {
+	function _onOk() {
+		db.deleteAllMatches()
+
+		dom.clearMatchList()
+		dom.sortPlayerList()
+		dom.updatePlayersPairedCount()
+		dom.haptic()
+	}
+
+	dom.showModal('<b>Delete all matches?<b>', _onOk)
 }
 
 function clickPlayer(e) {
@@ -102,38 +173,6 @@ function clickMatch(e) {
 	matchInstance.winner = matchInstance.winner ? null : true
 
 	db.saveMatchDBToLocalStorage()
-	dom.haptic()
-}
-
-function deletePlayer(e) {
-	if (e.target.tagName !== 'BUTTON') return
-
-	const elementPlayer = e.target.closest('.player')
-	if (!elementPlayer) return
-
-	const playerId = elementPlayer.dataset.id
-
-	if (MatchFactory.includesPlayer(playerId)) MatchFactory.removePlayer(playerId)
-	db.deletePlayer(playerId)
-
-	dom.updateMatchQueue()
-	dom.updatePlayersPairedCount()
-	elementPlayer.remove()
-	dom.haptic()
-}
-
-function deleteMatch(e) {
-	if (e.target.tagName !== 'BUTTON') return
-
-	const elementMatch = e.target.closest('.match')
-	if (!elementMatch) return
-
-	const matchId = +elementMatch.dataset.id
-	db.deleteMatch(matchId)
-	elementMatch.remove()
-
-	dom.sortPlayerList()
-	dom.updatePlayersPairedCount()
 	dom.haptic()
 }
 
@@ -212,6 +251,8 @@ export default {
 	addMatch,
 	deletePlayer,
 	deleteMatch,
+	deleteAllPlayers,
+	deleteAllMatches,
 	clickPlayer,
 	clickMatch,
 	clickMatchQueue,
