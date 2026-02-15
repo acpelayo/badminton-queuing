@@ -6,16 +6,14 @@ let _dbMatches = []
 
 // PLAYER FUNCTIONS
 function addPlayer(newPlayerName) {
-	const newPlayerId = newPlayerName.toLowerCase()
-
 	// check if player exists
-	if (_dbPlayers.filter((player) => player.id === newPlayerId).length !== 0) return null
+	if (_dbPlayers.filter((player) => player.id.toLowerCase() === newPlayerName.toLowerCase()).length !== 0) return null
 
-	const newPlayer = new Player({ playerName: newPlayerName })
+	const newPlayer = new Player({ id: newPlayerName })
 
 	// check if player has played in existing matches
 	_dbMatches.forEach((match) => {
-		if (match.includesPlayer(newPlayerName)) {
+		if (match.includesPlayer(newPlayer.id)) {
 			newPlayer.addMatch(match.id)
 		}
 	})
@@ -32,6 +30,10 @@ function addPlayer(newPlayerName) {
 function deletePlayer(playerID) {
 	_dbPlayers = _dbPlayers.filter((player) => player.id !== playerID)
 
+	savePlayerDBtoLocalStorage()
+}
+function deleteAllPlayers() {
+	_dbPlayers = []
 	savePlayerDBtoLocalStorage()
 }
 function getPlayer(playerID) {
@@ -66,6 +68,16 @@ function deleteMatch(matchId) {
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
+function deleteAllMatches() {
+	_dbMatches = []
+	_dbPlayers.forEach((player) => player.deleteAllMatches())
+
+	_sortPlayers()
+
+	savePlayerDBtoLocalStorage()
+	saveMatchDBToLocalStorage()
+}
+
 function moveMatch(fromIndex, toIndex) {
 	const [match] = _dbMatches.splice(fromIndex, 1)
 	_dbMatches.splice(toIndex, 0, match)
@@ -76,7 +88,6 @@ function moveMatch(fromIndex, toIndex) {
 	saveMatchDBToLocalStorage()
 	savePlayerDBtoLocalStorage()
 }
-
 function getMatch(matchID) {
 	return _dbMatches.find((match) => match.id === matchID)
 }
@@ -91,16 +102,9 @@ function savePlayerDBtoLocalStorage() {
 function saveMatchDBToLocalStorage() {
 	localStorage.setItem('dbMatch', JSON.stringify(_dbMatches))
 }
-
 function retrievePlayerDBFromLocalStorage() {
 	const playerInfo = JSON.parse(localStorage.getItem('dbPlayer')) || []
-	_dbPlayers = playerInfo
-		.map((playerJSON) => {
-			if (playerJSON.playerName === undefined) return null
-
-			return Player.fromJSON(playerJSON)
-		})
-		.filter((x) => x !== null)
+	_dbPlayers = playerInfo.map((playerJSON) => Player.fromJSON(playerJSON))
 }
 function retrieveMatchDBFromLocalStorage() {
 	const matchInfo = JSON.parse(localStorage.getItem('dbMatch')) || []
@@ -148,26 +152,20 @@ function _sortPlayers() {
 	})
 }
 
-function _deleteOldDb() {
-	// cleanup of old database
-	const oldPlayerDB = localStorage.getItem('players')
-	const oldMatchDB = localStorage.getItem('matches')
-
-	if (oldPlayerDB) localStorage.removeItem('players')
-	if (oldMatchDB) localStorage.removeItem('matches')
-}
-_deleteOldDb()
-
 export default {
 	addPlayer,
 	deletePlayer,
+	deleteAllPlayers,
 	getPlayer,
 	getPlayerArray,
+
 	addMatch,
 	deleteMatch,
+	deleteAllMatches,
 	moveMatch,
 	getMatch,
 	getMatchArray,
+
 	savePlayerDBtoLocalStorage,
 	saveMatchDBToLocalStorage,
 	retrievePlayerDBFromLocalStorage,

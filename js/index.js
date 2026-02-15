@@ -9,6 +9,12 @@ dom.loadPlayerList()
 dom.loadMatchList()
 dom.updateMatchQueue()
 
+const btnDeleteAllPlayers = document.getElementById('delete-all-players')
+const btnDeleteAllMatches = document.getElementById('delete-all-matches')
+
+btnDeleteAllPlayers.addEventListener('click', handler.deleteAllPlayers)
+btnDeleteAllMatches.addEventListener('click', handler.deleteAllMatches)
+
 const textInputAddPlayer = document.getElementById('player-name')
 const btnAddPlayer = document.querySelector('#add-player > button')
 const elementPlayerList = document.getElementById('player-list')

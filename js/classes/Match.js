@@ -187,6 +187,9 @@ export class MatchFactory {
 		}
 		return -1
 	}
+	static reset() {
+		this.currentPlayers = new Array(4).fill(null)
+	}
 
 	static get isFull() {
 		return !MatchFactory.currentPlayers.includes(null)

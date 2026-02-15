@@ -1,6 +1,5 @@
 export class Player {
 	#id
-	#playerName
 	#matches
 	#lastConsecutiveMatchesCount
 	#matchesSinceLastMatch
@@ -14,8 +13,7 @@ export class Player {
 	}
 
 	constructor(playerData) {
-		this.#playerName = playerData.playerName || Date.now().toString()
-		this.#id = playerData.id || this.#playerName.toLowerCase()
+		this.#id = playerData.id
 		this.#matches = playerData.matches || []
 		this.#lastConsecutiveMatchesCount = playerData.lastConsecutiveMatchesCount !== undefined ? playerData.lastConsecutiveMatchesCount : 0
 		this.#matchesSinceLastMatch = playerData.matchesSinceLastMatch !== undefined ? playerData.matchesSinceLastMatch : -1
@@ -27,9 +25,6 @@ export class Player {
 	}
 	get id() {
 		return this.#id
-	}
-	get playerName() {
-		return this.#playerName
 	}
 	get matches() {
 		return this.#matches
@@ -113,6 +108,16 @@ export class Player {
 		}
 	}
 
+	deleteAllMatches() {
+		this.#matches = []
+		if (this.#dom.spanGameCount !== null) {
+			this.#dom.spanGameCount.textContent = this.#matches.length
+		}
+
+		this.lastConsecutiveMatchesCount = 0
+		this.matchesSinceLastMatch = -1
+	}
+
 	#createPlayerElement() {
 		const spanGameCount = document.createElement('span')
 		const spanPlayerName = document.createElement('span')
@@ -126,7 +131,7 @@ export class Player {
 		spanPairCount.classList.add('count-pair')
 
 		spanGameCount.textContent = this.matchCount
-		spanPlayerName.textContent = this.playerName
+		spanPlayerName.textContent = this.id
 
 		if (this.matchesSinceLastMatch === 0) {
 			spanPlayerName.classList.add('with-details')
@@ -182,7 +187,6 @@ export class Player {
 
 	toJSON() {
 		return {
-			playerName: this.#playerName,
 			id: this.#id,
 			matches: this.#matches,
 			lastConsecutiveMatchesCount: this.#lastConsecutiveMatchesCount,

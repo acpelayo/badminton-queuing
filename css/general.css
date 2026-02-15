@@ -4,6 +4,13 @@ button {
 	-webkit-tap-highlight-color: transparent;
 	flex-shrink: 0;
 	transition: transform 0.1s ease-out;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: black;
+
+	border: none;
 }
 
 button:active {
@@ -51,24 +58,6 @@ main {
 	padding: 10px;
 }
 
-button {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: black;
-}
-
-h2 {
-	text-align: left;
-	margin-bottom: 10px;
-	font-size: 30px;
-	padding-left: 20px;
-}
-
-.hidden {
-	visibility: hidden;
-}
-
 .pill {
 	position: relative;
 	display: flex;
@@ -96,4 +85,25 @@ h2 {
 
 .bold {
 	font-weight: bold;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+
+	h2 {
+		font-size: 30px;
+		padding-left: 20px;
+	}
+
+	button {
+		margin-left: auto;
+		height: 40px;
+		border-radius: 20px;
+		background-color: var(--color-secondary);
+		color: white;
+		font-size: 14px;
+		width: 100px;
+	}
 }
