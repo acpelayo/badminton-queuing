@@ -54,7 +54,7 @@ function deletePlayer(e) {
 	if (!elementPlayer) return
 
 	const playerId = elementPlayer.dataset.id
-	dom.haptic()
+
 	function _onOk() {
 		if (MatchFactory.includesPlayer(playerId)) MatchFactory.removePlayer(playerId)
 		db.deletePlayer(playerId)
@@ -64,8 +64,8 @@ function deletePlayer(e) {
 		elementPlayer.remove()
 		dom.haptic()
 	}
-
-	dom.showModal(`<span>Delete player&nbsp<b>${playerId}</b>?</span>`, _onOk)
+	dom.haptic()
+	dom.showModal(`<span>Are you sure you want to delete this player?</span><b>${playerId}</b>`, _onOk, 'Delete')
 }
 
 function deleteMatch(e) {
@@ -77,7 +77,6 @@ function deleteMatch(e) {
 	const matchId = +elementMatch.dataset.id
 	const matchInstance = db.getMatch(matchId)
 	const players = matchInstance.players
-	dom.haptic()
 
 	function _onOk() {
 		db.deleteMatch(matchId)
@@ -87,8 +86,11 @@ function deleteMatch(e) {
 		dom.updatePlayersPairedCount()
 		dom.haptic()
 	}
-	const strMatchup = `<b>${players[0]} + ${players[1]}</b> vs <b> ${players[2]} + ${players[3]}</b>`
-	dom.showModal(`Delete this match?<span>${strMatchup}</span>`, _onOk)
+	const strTeam1 = `<span><b>${players[0]} + ${players[1]}</b></span>`
+	const strTeam2 = `<span><b>${players[2]} + ${players[3]}</b></span>`
+	const strMatchup = `<span>${strTeam1}<span> vs </span>${strTeam2}</span>`
+	dom.haptic()
+	dom.showModal(`<span>Are you sure you want to delete this match?</span>${strMatchup}`, _onOk, 'Delete')
 }
 
 function deleteAllPlayers(e) {
@@ -102,7 +104,8 @@ function deleteAllPlayers(e) {
 		dom.haptic()
 	}
 
-	dom.showModal('<b>Delete all players?</b>', _onOk)
+	dom.haptic()
+	dom.showModal('<b>Are you sure you want to delete all players?</b>', _onOk, 'Delete')
 }
 
 function deleteAllMatches(e) {
@@ -115,7 +118,8 @@ function deleteAllMatches(e) {
 		dom.haptic()
 	}
 
-	dom.showModal('<b>Delete all matches?<b>', _onOk)
+	dom.haptic()
+	dom.showModal('<b>Are you sure you want to delete all matches?</b>', _onOk, 'Delete')
 }
 
 function clickPlayer(e) {

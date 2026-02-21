@@ -34,9 +34,18 @@ function moveUp(element) {
 	}, duration)
 }
 
+function hidePreloader(element) {
+	const duration = 500
+	element.classList.add('animate-hide-preloader')
+	setTimeout(() => {
+		element.classList.remove('animate-hide-preloader')
+	}, duration)
+}
+
 export default {
 	fadeFromAbove,
 	fadeAwayLeft,
 	moveDown,
 	moveUp,
+	hidePreloader,
 }

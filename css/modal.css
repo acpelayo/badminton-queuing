@@ -14,8 +14,11 @@
 	transition: opacity 0.25s ease-out;
 	opacity: 0;
 
+	span {
+		text-align: center;
+	}
+
 	&.show {
-		/* display: flex; */
 		pointer-events: auto;
 		opacity: 1;
 
@@ -26,14 +29,14 @@
 	}
 
 	.message-box {
-		border-radius: 20px;
+		border-radius: 30px;
 		overflow: hidden;
-		width: 100%;
-		max-width: 300px;
-		height: 150px;
+		width: 90%;
+		max-width: 400px;
+		height: 200px;
 		background-color: white;
 		display: grid;
-		grid-template-rows: 30px 1fr 35px;
+		grid-template-rows: 40px 1fr 55px;
 		grid-template-columns: 1fr 1fr;
 		box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.35);
 		border: 1px solid var(--color-secondary);
@@ -49,29 +52,26 @@
 			font-size: 14px;
 		}
 
-		& > span {
-			display: flex;
+		.modal-header {
+			justify-content: center;
 			align-items: center;
-			width: 100%;
+			border-bottom: 1px solid var(--color-secondary);
+			grid-area: 1 / 1 / 2 / 3;
+			background-color: var(--color-secondary);
+			color: white;
+			font-weight: bold;
+			display: flex;
+		}
 
-			&:nth-of-type(1) {
-				justify-content: center;
-				align-items: center;
-				border-bottom: 1px solid var(--color-secondary);
-				grid-area: 1 / 1 / 2 / 3;
-				background-color: var(--color-secondary);
-				color: white;
-				font-weight: bold;
-			}
-
-			&:nth-of-type(2) {
-				justify-content: center;
-				grid-area: 2 / 1 / 4 / 3;
-				background-color: white;
-				padding-bottom: 35px;
-				display: flex;
-				flex-direction: column;
-			}
+		.modal-message {
+			display: flex;
+			justify-content: center;
+			grid-area: 2 / 1 / 4 / 3;
+			background-color: white;
+			flex-direction: column;
+			padding-left: 20px;
+			padding-right: 20px;
+			padding-bottom: 50px;
 		}
 
 		b {
@@ -80,24 +80,27 @@
 
 		button {
 			border: none;
-			border-radius: 15px;
-			padding: 0;
-			height: 30px;
-			background-color: var(--color-secondary);
-			color: white;
-			font-size: 12px;
+			border-radius: 25px;
+			height: 50px;
+			font-size: 14px;
 			grid-row: 3 / 4;
+			font-weight: bold;
 
-			&:nth-of-type(1) {
+			&.modal-ok {
 				margin-left: 5px;
 				margin-right: 3px;
 				grid-column: 1 / 2;
+				background-color: var(--color-secondary);
+				color: white;
 			}
 
-			&:nth-of-type(2) {
+			&.modal-cancel {
 				margin-right: 5px;
 				margin-left: 3px;
 				grid-column: 2 / 3;
+				background-color: var(--color-white);
+				color: var(--color-secondary);
+				border: 1px solid rgba(from var(--color-secondary) r g b / 0.1);
 			}
 		}
 	}

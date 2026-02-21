@@ -35,3 +35,5 @@ const elementMatchList = document.getElementById('match-list')
 elementMatchList.addEventListener('click', handler.deleteMatch)
 elementMatchList.addEventListener('click', handler.clickMatch)
 elementMatchList.addEventListener('pointerdown', handler.matchPointerDown)
+
+window.addEventListener('load', dom.hidePreloader)

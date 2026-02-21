@@ -1,5 +1,5 @@
 .animate-fade-from-left {
-	animation: fade-from-left 0.5s ease-out;
+	animation: fade-from-left 0.5s ease-out forwards;
 }
 @keyframes fade-from-left {
 	0% {
@@ -15,7 +15,7 @@
 }
 
 .animate-fade-from-above {
-	animation: fade-from-above 0.5s ease-out;
+	animation: fade-from-above 0.5s ease-out forwards;
 }
 @keyframes fade-from-above {
 	0% {
@@ -31,7 +31,7 @@
 }
 
 .animate-move-down {
-	animation: move-down 0.5s ease-out;
+	animation: move-down 0.5s ease-out forwards;
 }
 @keyframes move-down {
 	0% {
@@ -40,5 +40,18 @@
 
 	100% {
 		transform: translateY(0px);
+	}
+}
+
+.animate-hide-preloader {
+	animation: hide-preloader 0.5s ease-out forwards;
+}
+@keyframes hide-preloader {
+	0% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
 	}
 }

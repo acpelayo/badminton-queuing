@@ -229,7 +229,7 @@ function clearPlayerList() {
 	Array.from(document.getElementById('player-list').children).forEach((element) => element.remove())
 }
 
-function showModal(message = '', onOk) {
+function showModal(message = '', onOk, customOkButtonText = 'OK') {
 	const elementModal = document.getElementById('modal')
 	const elementModalMessage = document.getElementById('modal-message')
 	const btnOk = document.getElementById('modal-ok')
@@ -237,6 +237,7 @@ function showModal(message = '', onOk) {
 
 	elementModal.classList.add('show')
 	elementModalMessage.innerHTML = message
+	btnOk.textContent = customOkButtonText
 
 	function _cleanup() {
 		elementModalMessage.innerHTML = ''
@@ -254,6 +255,15 @@ function showModal(message = '', onOk) {
 	}
 
 	elementModal.addEventListener('click', _handler)
+}
+
+function hidePreloader() {
+	const duration = 500
+	const elementPreloader = document.getElementById('preloader')
+	animate.hidePreloader(elementPreloader)
+	setTimeout(() => {
+		elementPreloader.style.display = 'none'
+	}, duration)
 }
 
 // ------------------------------- //
@@ -286,4 +296,5 @@ export default {
 	clearPlayerList,
 	clearMatchList,
 	showModal,
+	hidePreloader,
 }
