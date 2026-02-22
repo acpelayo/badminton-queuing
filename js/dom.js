@@ -29,6 +29,50 @@ function addMatch(newMatch) {
 	}
 }
 
+function deletePlayer(playerId) {
+	const elementPlayerList = document.getElementById('player-list')
+	const elementPlayers = Array.from(elementPlayerList.children)
+
+	const indexPlayer = elementPlayers //
+		.map((player) => player.dataset.id)
+		.findIndex((player) => player === playerId)
+
+	for (let i = 0; i < elementPlayers.length; i++) {
+		if (i === indexPlayer) {
+			animate.fadeOutRight(elementPlayers[i])
+		} else if (i > indexPlayer) {
+			animate.moveUp(elementPlayers[i])
+		}
+	}
+
+	const animationDuration = 500
+	setTimeout(() => {
+		elementPlayers[indexPlayer].remove()
+	}, animationDuration)
+}
+
+function deleteMatch(matchId) {
+	const elementMatchList = document.getElementById('match-list')
+	const elementMatches = Array.from(elementMatchList.children)
+
+	const indexMatch = elementMatches //
+		.map((match) => +match.dataset.id)
+		.findIndex((match) => match === matchId)
+
+	for (let i = 0; i < elementMatches.length; i++) {
+		if (i === indexMatch) {
+			animate.fadeOutRight(elementMatches[i])
+		} else if (i > indexMatch) {
+			animate.moveUp(elementMatches[i])
+		}
+	}
+
+	const animationDuration = 500
+	setTimeout(() => {
+		elementMatches[indexMatch].remove()
+	}, animationDuration)
+}
+
 function loadPlayerList() {
 	const elementPlayerList = document.getElementById('player-list')
 
@@ -285,6 +329,8 @@ function _countMatchesPaired(playerId1, playerId2) {
 export default {
 	addPlayer,
 	addMatch,
+	deletePlayer,
+	deleteMatch,
 	loadPlayerList,
 	loadMatchList,
 	clearPlayerHighlight,

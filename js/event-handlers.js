@@ -61,7 +61,7 @@ function deletePlayer(e) {
 
 		dom.updateMatchQueue()
 		dom.updatePlayersPairedCount()
-		elementPlayer.remove()
+		dom.deletePlayer(playerId)
 		dom.haptic()
 	}
 	dom.haptic()
@@ -80,10 +80,10 @@ function deleteMatch(e) {
 
 	function _onOk() {
 		db.deleteMatch(matchId)
-		elementMatch.remove()
 
 		dom.sortPlayerList()
 		dom.updatePlayersPairedCount()
+		dom.deleteMatch(matchId)
 		dom.haptic()
 	}
 	const strTeam1 = `<span><b>${players[0]} + ${players[1]}</b></span>`

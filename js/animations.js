@@ -7,21 +7,21 @@ function fadeFromAbove(element) {
 	}, duration)
 }
 
+function fadeOutRight(element) {
+	const duration = 500
+
+	element.classList.add('animate-fade-out-right')
+	setTimeout(() => {
+		element.classList.remove('animate-fade-out-right')
+	}, duration)
+}
+
 function moveDown(element) {
 	const duration = 500
 
 	element.classList.add('animate-move-down')
 	setTimeout(() => {
 		element.classList.remove('animate-move-down')
-	}, duration)
-}
-
-function fadeAwayLeft(element) {
-	const duration = 500
-
-	element.classList.add('animate-fade-away-left')
-	setTimeout(() => {
-		element.classList.remove('animate-fade-away-left')
 	}, duration)
 }
 
@@ -44,7 +44,7 @@ function hidePreloader(element) {
 
 export default {
 	fadeFromAbove,
-	fadeAwayLeft,
+	fadeOutRight,
 	moveDown,
 	moveUp,
 	hidePreloader,
