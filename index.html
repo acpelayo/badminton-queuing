@@ -10,7 +10,18 @@
 		<link rel="stylesheet" href="css/index.css" />
 	</head>
 	<body ontouchstart="">
-		<div id="preloader" class="preloader"></div>
+		<div id="preloader" class="preloader">
+			<div id="error-info">
+				<span id="error-stack"><b>Stack:</b><br /></span>
+				<br />
+				<span id="error-player-array"><b>Player Array:</b><br /></span>
+				<br />
+				<span id="error-match-array"><b>Match Array:</b><br /></span>
+				<br />
+
+				<button id="btn-reset-data">RESET DATA</button>
+			</div>
+		</div>
 		<label id="haptic" style="display: none"><input type="checkbox" switch /></label>
 		<div id="modal" class="modal">
 			<div class="message-box">

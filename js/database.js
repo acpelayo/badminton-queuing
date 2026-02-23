@@ -110,6 +110,13 @@ function retrieveMatchDBFromLocalStorage() {
 	const matchInfo = JSON.parse(localStorage.getItem('dbMatch')) || []
 	_dbMatches = matchInfo.map((matchJSON) => Match.fromJSON(matchJSON))
 }
+function resetDatabase() {
+	_dbPlayers = []
+	_dbMatches = []
+
+	savePlayerDBtoLocalStorage()
+	saveMatchDBToLocalStorage()
+}
 
 // UTILITIES
 function _updatePlayersMatchInfo() {
@@ -170,4 +177,5 @@ export default {
 	saveMatchDBToLocalStorage,
 	retrievePlayerDBFromLocalStorage,
 	retrieveMatchDBFromLocalStorage,
+	resetDatabase,
 }

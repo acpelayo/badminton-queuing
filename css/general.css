@@ -116,5 +116,32 @@ main {
 	left: 0;
 	right: 0;
 	background-color: white;
-	z-index: 9999;
+	z-index: 2000;
+	overflow-y: scroll;
+
+	#error-info {
+		padding: 20px;
+		display: none;
+		flex-direction: column;
+
+		#error-stack,
+		#error-player-array,
+		#error-match-array {
+			display: block;
+			white-space: pre-wrap;
+			font-family: monospace;
+		}
+
+		button {
+			height: 60px;
+			width: 200px;
+			color: white;
+			background-color: var(--color-red);
+			font-weight: bold;
+			font-size: 20px;
+			border-radius: 30px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
 }
