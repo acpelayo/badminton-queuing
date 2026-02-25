@@ -104,11 +104,15 @@ function saveMatchDBToLocalStorage() {
 }
 function retrievePlayerDBFromLocalStorage() {
 	const playerInfo = JSON.parse(localStorage.getItem('dbPlayer')) || []
-	_dbPlayers = playerInfo.map((playerJSON) => Player.fromJSON(playerJSON))
+	_dbPlayers = playerInfo //
+		.filter((playerJSON) => playerJSON !== null)
+		.map((playerJSON) => Player.fromJSON(playerJSON))
 }
 function retrieveMatchDBFromLocalStorage() {
 	const matchInfo = JSON.parse(localStorage.getItem('dbMatch')) || []
-	_dbMatches = matchInfo.map((matchJSON) => Match.fromJSON(matchJSON))
+	_dbMatches = matchInfo //
+		.filter((matchJSON) => matchJSON !== null)
+		.map((matchJSON) => Match.fromJSON(matchJSON))
 }
 function resetDatabase() {
 	_dbPlayers = []

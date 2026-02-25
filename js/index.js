@@ -41,7 +41,7 @@ try {
 } catch (err) {
 	const strPlayerArr = JSON.stringify(db.getPlayerArray(), null, 2) + '\n' + localStorage.getItem('dbPlayer')
 	const strMatchArr = JSON.stringify(db.getMatchArray(), null, 2) + '\n' + localStorage.getItem('dbMatch')
-	
+
 	document.getElementById('error-info').style.display = 'flex'
 	document.getElementById('error-stack').append(`${err.name} ${err.stack}`)
 	document.getElementById('error-player-array').append(strPlayerArr)
@@ -58,4 +58,3 @@ try {
 		)
 	})
 }
-
